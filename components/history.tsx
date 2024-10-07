@@ -5,17 +5,38 @@ import { fetcher } from "@/utils/functions";
 import cx from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useParams, usePathname } from "next/navigation";
+import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import useSWR from "swr";
-import { InfoIcon, MenuIcon, PencilEditIcon } from "./icons";
+import { InfoIcon, MenuIcon, PencilEditIcon, TrashIcon } from "./icons";
 
 export const History = () => {
+  const router = useRouter();
   const { id } = useParams();
   const pathname = usePathname();
-  console.log('pathname', pathname)
-  console.log('id', id)
+  console.log("pathname", pathname);
+  console.log("id", id);
+
+  const deleteChat = async (chatId: string) => {
+    const response = await fetch('/api/history', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: chatId }),
+    });
   
+    if (response.ok) {
+      mutate();  // Päivitä historia poiston jälkeen
+
+      if (chatId === id) {
+        router.push('/');
+      }
+    } else {
+      console.error('Failed to delete chat');
+    }
+  };
+
   const [isHistoryVisible, setIsHistoryVisible] = React.useState(false);
   const {
     data: history,
@@ -91,7 +112,7 @@ export const History = () => {
                 {!isLoading && history?.length === 0 && !error ? (
                   <div className="text-zinc-500 h-dvh w-full flex flex-row justify-center items-center text-sm gap-2">
                     <InfoIcon />
-                    <div>No chats found</div>
+                    <div>Chat historiia ei löytynyt</div>
                   </div>
                 ) : null}
 
@@ -112,18 +133,31 @@ export const History = () => {
 
                 {history &&
                   history.map((chat) => (
-                    <Link
-                      href={`/${chat.id}`}
+                    <div
                       key={chat.id}
-                      className={cx(
-                        "p-2 dark:text-zinc-400 border-b dark:border-zinc-700 text-sm dark:hover:bg-zinc-700 hover:bg-zinc-200 last-of-type:border-b-0",
-                        {
-                          "dark:bg-zinc-700 bg-zinc-200": id === chat.id,
-                        },
-                      )}
+                      className="flex justify-between items-center"
                     >
-                      {chat.messages[0].content as string}
-                    </Link>
+                      <Link
+                        href={`/${chat.id}`}
+                        className={cx(
+                          "p-2 dark:text-zinc-400 border-b dark:border-zinc-700 text-sm dark:hover:bg-zinc-700 hover:bg-zinc-200 last-of-type:border-b-0 flex-grow",
+                          {
+                            "dark:bg-zinc-700 bg-zinc-200": id === chat.id,
+                          }
+                        )}
+                      >
+                        {chat.messages[0].content as string}
+                      </Link>
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          deleteChat(chat.id);
+                        }}
+                        className="p-2 dark:text-zinc-400 dark:hover:text-zinc-200"
+                      >
+                        <TrashIcon size={14} />
+                      </button>
+                    </div>
                   ))}
               </div>
             </motion.div>

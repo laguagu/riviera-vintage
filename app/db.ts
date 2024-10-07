@@ -58,6 +58,10 @@ export async function getChatsByUser({ email }: { email: string }) {
     .orderBy(desc(chat.createdAt));
 }
 
+export async function deleteChatById({ id }: { id: string }) {
+  return await db.delete(chat).where(eq(chat.id, id));
+}
+
 export async function getChatById({ id }: { id: string }) {
   const [selectedChat] = await db.select().from(chat).where(eq(chat.id, id));
   return selectedChat;

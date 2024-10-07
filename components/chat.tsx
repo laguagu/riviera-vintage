@@ -13,12 +13,12 @@ import { useEffect, useState } from "react";
 const suggestedActions = [
   {
     title: "Mikä on yhteenveto",
-    label: "näistä asiakirjoista?",
+    label: "valituista asiakirjoista?",
     action: "mikä on näiden asiakirjojen yhteenveto?",
   },
   {
     title: "Kuka on kirjoittaja",
-    label: "näistä asiakirjoista?",
+    label: "valituista asiakirjoista?",
     action: "kuka on näiden asiakirjojen kirjoittaja?",
   },
 ];
