@@ -9,6 +9,7 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import useSWR from "swr";
 import { InfoIcon, MenuIcon, PencilEditIcon, TrashIcon } from "./icons";
+import { buttonVariants } from "./ui/button";
 
 export const History = () => {
   const router = useRouter();
@@ -18,22 +19,22 @@ export const History = () => {
   console.log("id", id);
 
   const deleteChat = async (chatId: string) => {
-    const response = await fetch('/api/history', {
-      method: 'POST',
+    const response = await fetch("/api/history", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ id: chatId }),
     });
-  
+
     if (response.ok) {
-      mutate();  // Päivitä historia poiston jälkeen
+      mutate(); // Päivitä historia poiston jälkeen
 
       if (chatId === id) {
-        router.push('/');
+        router.push("/");
       }
     } else {
-      console.error('Failed to delete chat');
+      console.error("Failed to delete chat");
     }
   };
 
@@ -82,6 +83,21 @@ export const History = () => {
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 400, damping: 40 }}
             >
+              <div className="flex gap-4 justify-center">
+                <Link
+                  className={buttonVariants({ variant: "outline" })}
+                  href={"/"}
+                >
+                  Chat
+                </Link>
+                <Link
+                  className={buttonVariants({ variant: "outline" })}
+                  href={"tarjouspyynto"}
+                >
+                  Tarjouspyyntö
+                </Link>
+              </div>
+
               <div className="text-sm flex flex-row items-center justify-between">
                 <div className="flex flex-row gap-2">
                   <div className="dark:text-zinc-300">Historia</div>

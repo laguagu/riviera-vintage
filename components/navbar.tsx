@@ -9,9 +9,7 @@ export const Navbar = async () => {
     <div className="bg-white absolute top-0 left-0 w-dvw border-b dark:border-zinc-800 py-2 px-3 justify-between flex flex-row items-center dark:bg-zinc-900 z-30">
       <div className="flex flex-row gap-3 items-center">
         <History />
-        <div className="text-sm dark:text-zinc-300">
-          Riviera Vintage
-        </div>
+        <div className="text-sm dark:text-zinc-300">Riviera Vintage</div>
       </div>
 
       {session ? (
@@ -21,6 +19,7 @@ export const Navbar = async () => {
           </div>
           <div className="flex-col absolute top-6 right-0 w-full pt-5 group-hover:flex hidden">
             <form
+              /* @ts-ignore */
               action={async () => {
                 "use server";
                 await signOut();

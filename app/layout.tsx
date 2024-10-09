@@ -18,6 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Toaster position="top-center" />
+        {/* @ts-ignore */}
         <Navbar />
         {children}
       </body>
