@@ -3,7 +3,7 @@ import { z } from "zod";
 
 const searchSerperLocations = tool({
   description:
-    "Search for antique stores in Finland using Google Places API via Serper. Returns information about the stores including their position, title, address, and website.",
+    "Search for antique stores in Finland using Google Places API via Serper. Returns information about the stores including their position, title, address, and website etc.",
   parameters: z.object({
     query: z
       .string()
@@ -20,8 +20,11 @@ const searchSerperLocations = tool({
     if (!apiKey) {
       throw new Error("NEXT_PUBLIC_SERPER_API_KEY is not set");
     }
-
-    const searchQuery = `antiikkiliike ${query} ${city || ""}`.trim();
+    console.log('Kutsuttu työkalua', query, city);
+    
+    const searchQuery = `${query} ${city || ""}`.trim();
+    console.log('searchQuery', searchQuery);
+    
     const response = await fetch("https://google.serper.dev/places", {
       method: "POST",
       headers: {
@@ -40,9 +43,10 @@ const searchSerperLocations = tool({
     if (!response.ok) {
       throw new Error(`Failed to fetch antique stores: ${response.statusText}`);
     }
-
+    
     const data = await response.json();
-
+    console.log('data', data);
+    
     if (!data.places || data.places.length === 0) {
       return { message: "No antique stores found for the given query." };
     }

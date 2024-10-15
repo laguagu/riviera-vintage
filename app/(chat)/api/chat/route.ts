@@ -1,8 +1,8 @@
 import { customModel } from "@/ai";
+import { searchSerperLocations } from "@/ai/tools";
 import { auth } from "@/app/(auth)/auth";
 import { createMessage } from "@/app/db";
 import { convertToCoreMessages, streamText } from "ai";
-import { searchSerperLocations } from "@/ai/tools"; 
 
 export async function POST(request: Request) {
   const { id, messages, selectedFilePathnames } = await request.json();
@@ -24,15 +24,18 @@ export async function POST(request: Request) {
         selection: selectedFilePathnames,
       },
     },
-    // tools: {
-    //   searchAntiqueStores: searchSerperLocations
-    // },
+    tools: {
+      searchAntiqueStores: searchSerperLocations,
+    },
+    maxSteps: 5,
     onFinish: async ({ text }) => {
-      await createMessage({
-        id,
-        messages: [...messages, { role: "assistant", content: text }],
-        author: session.user?.email!,
-      });
+      if (text.trim() !== '') {  // Lisää tämä tarkistus
+        await createMessage({
+          id,
+          messages: [...messages, { role: "assistant", content: text }],
+          author: session.user?.email!,
+        });
+      }
     },
     experimental_telemetry: {
       isEnabled: true,

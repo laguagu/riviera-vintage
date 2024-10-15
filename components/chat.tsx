@@ -66,10 +66,11 @@ export function Chat({
   const { messages, handleSubmit, input, setInput, append } = useChat({
     body: { id, selectedFilePathnames },
     initialMessages,
-    onFinish: (e) => {
-      console.log("onFinish", e);
-
-      window.history.replaceState({}, "", `/${id}`);
+    onFinish: (message) => {
+      console.log("onFinish", message);
+      if (message.content.trim() !== "") {
+        window.history.replaceState({}, "", `/${id}`);
+      }
     },
   });
 
@@ -83,13 +84,16 @@ export function Chat({
           ref={messagesContainerRef}
           className="flex flex-col gap-4 h-full w-dvw items-center overflow-y-scroll"
         >
-          {messages.map((message, index) => (
-            <PreviewMessage
-              key={`${id}-${index}`}
-              role={message.role}
-              content={message.content}
-            />
-          ))}
+          {messages.map(
+            (message, index) =>
+              message.content.trim() !== "" && (
+                <PreviewMessage
+                  key={`${id}-${index}`}
+                  role={message.role}
+                  content={message.content}
+                />
+              )
+          )}
           <div
             ref={messagesEndRef}
             className="flex-shrink-0 min-w-[24px] min-h-[24px]"

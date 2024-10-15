@@ -22,18 +22,24 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
   // transformParams-funktio suoritetaan ennen jokaista kielimallipyyntöä
   transformParams: async ({ params }) => {
     console.log("RAG middleware started");
-    console.log("Initial params:", JSON.stringify(params, null, 2));
+    console.log("------------------------------------------------------------------------------------");
+
     // Tarkistetaan käyttäjän istunto
     const session = await auth();
     if (!session) return params; // Jos istuntoa ei ole, palautetaan parametrit muuttumattomina
+
     console.log("User session:", session.user?.email);
     const { prompt: messages, providerMetadata } = params;
-    console.log("Messages:", JSON.stringify(messages, null, 2));
     console.log(
       "Provider metadata:",
       JSON.stringify(providerMetadata, null, 2)
     );
-
+    if (messages.length === 0 || messages[messages.length - 1].role !== 'user') {
+      console.log("Last message is not from user, skipping RAG processing");
+      return params;
+    }
+  
+    console.log("Processing user message with RAG");
     // Validoidaan metatieto Zod-skeeman avulla
     const { success, data } = selectionSchema.safeParse(providerMetadata);
     if (!success) {
@@ -43,6 +49,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
 
     const selection = data.files.selection;
     console.log("Selected files:", selection);
+    // Tarkistetaan, onko viimeinen viesti käyttäjältä
 
     // Käsitellään viimeisin viesti
     const recentMessage = messages.pop();
@@ -53,13 +60,15 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       }
       return params;
     }
+    
+    console.log('---------RECENT MESSAGE---------');
     console.log("Recent message:", JSON.stringify(recentMessage, null, 2));
     // Poimitaan viestin tekstisisältö
     const lastUserMessageContent = recentMessage.content
       .filter((content) => content.type === "text")
       .map((content) => content.text)
       .join("\n");
-    console.log("Last user message content:", lastUserMessageContent);
+    console.log("---------LAST USER MESSAGE CONTENT---------", lastUserMessageContent);
     // Luokitellaan käyttäjän viesti kysymykseksi, väitteeksi tai muuksi
     const { object: classification } = await generateObject({
       model: openai("gpt-4o-mini", { structuredOutputs: true }),
@@ -68,7 +77,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       system: "classify the user message as a question, statement, or other",
       prompt: lastUserMessageContent,
     });
-    console.log("Message classification:", classification);
+    console.log("-------------Message classification:", classification);
     // RAG-toiminnallisuutta käytetään vain kysymyksiin
     if (classification !== "question") {
       console.log("Not a question, returning original params", params);
