@@ -1,5 +1,6 @@
 "use server";
 
+import { createUser, getUser } from "../db";
 import { signIn } from "./auth";
 
 export interface LoginActionState {
@@ -27,23 +28,23 @@ export interface RegisterActionState {
   status: "idle" | "in_progress" | "success" | "failed" | "user_exists";
 }
 
-// export const register = async (
-//   data: RegisterActionState,
-//   formData: FormData,
-// ) => {
-//   let email = formData.get("email") as string;
-//   let password = formData.get("password") as string;
-//   let user = await getUser(email);
+export const register = async (
+  data: RegisterActionState,
+  formData: FormData,
+) => {
+  let email = formData.get("email") as string;
+  let password = formData.get("password") as string;
+  let user = await getUser(email);
 
-//   if (user.length > 0) {
-//     return { status: "user_exists" } as RegisterActionState;
-//   } else {
-//     await createUser(email, password);
-//     await signIn("credentials", {
-//       email,
-//       password,
-//       redirect: false,
-//     });
-//     return { status: "success" } as RegisterActionState;
-//   }
-// };
+  if (user.length > 0) {
+    return { status: "user_exists" } as RegisterActionState;
+  } else {
+    await createUser(email, password);
+    await signIn("credentials", {
+      email,
+      password,
+      redirect: false,
+    });
+    return { status: "success" } as RegisterActionState;
+  }
+};
