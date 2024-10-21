@@ -8,7 +8,7 @@ const searchSerperLocations = tool({
     query: z
       .string()
       .describe(
-        'The search query for antique stores. Include "antiikkiliike" or related terms for best results.'
+        'The search query for antique stores. Include "antiikkiliike" or related terms for best results.',
       ),
     city: z
       .string()
@@ -20,11 +20,11 @@ const searchSerperLocations = tool({
     if (!apiKey) {
       throw new Error("NEXT_PUBLIC_SERPER_API_KEY is not set");
     }
-    console.log('Kutsuttu työkalua', query, city);
-    
+    console.log("Kutsuttu työkalua", query, city);
+
     const searchQuery = `${query} ${city || ""}`.trim();
-    console.log('searchQuery', searchQuery);
-    
+    console.log("searchQuery", searchQuery);
+
     const response = await fetch("https://google.serper.dev/places", {
       method: "POST",
       headers: {
@@ -43,10 +43,10 @@ const searchSerperLocations = tool({
     if (!response.ok) {
       throw new Error(`Failed to fetch antique stores: ${response.statusText}`);
     }
-    
+
     const data = await response.json();
-    console.log('data', data);
-    
+    console.log("data", data);
+
     if (!data.places || data.places.length === 0) {
       return { message: "No antique stores found for the given query." };
     }
@@ -65,4 +65,3 @@ const searchSerperLocations = tool({
 });
 
 export { searchSerperLocations };
-

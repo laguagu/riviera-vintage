@@ -39,12 +39,8 @@
           "name": "Chat_author_User_email_fk",
           "tableFrom": "Chat",
           "tableTo": "User",
-          "columnsFrom": [
-            "author"
-          ],
-          "columnsTo": [
-            "email"
-          ],
+          "columnsFrom": ["author"],
+          "columnsTo": ["email"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }

@@ -42,7 +42,7 @@ export function Chat({
     if (isMounted !== false && session && session.user) {
       localStorage.setItem(
         `${session.user.email}/selected-file-pathnames`,
-        JSON.stringify(selectedFilePathnames)
+        JSON.stringify(selectedFilePathnames),
       );
     }
   }, [selectedFilePathnames, isMounted, session]);
@@ -56,9 +56,9 @@ export function Chat({
       setSelectedFilePathnames(
         JSON.parse(
           localStorage.getItem(
-            `${session.user.email}/selected-file-pathnames`
-          ) || "[]"
-        )
+            `${session.user.email}/selected-file-pathnames`,
+          ) || "[]",
+        ),
       );
     }
   }, [session]);
@@ -92,7 +92,7 @@ export function Chat({
                   role={message.role}
                   content={message.content}
                 />
-              )
+              ),
           )}
           <div
             ref={messagesEndRef}

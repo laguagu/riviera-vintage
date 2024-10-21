@@ -22,7 +22,9 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
   // transformParams-funktio suoritetaan ennen jokaista kielimallipyyntöä
   transformParams: async ({ params }) => {
     console.log("RAG middleware started");
-    console.log("------------------------------------------------------------------------------------");
+    console.log(
+      "------------------------------------------------------------------------------------",
+    );
 
     // Tarkistetaan käyttäjän istunto
     const session = await auth();
@@ -32,13 +34,16 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
     const { prompt: messages, providerMetadata } = params;
     console.log(
       "Provider metadata:",
-      JSON.stringify(providerMetadata, null, 2)
+      JSON.stringify(providerMetadata, null, 2),
     );
-    if (messages.length === 0 || messages[messages.length - 1].role !== 'user') {
+    if (
+      messages.length === 0 ||
+      messages[messages.length - 1].role !== "user"
+    ) {
       console.log("Last message is not from user, skipping RAG processing");
       return params;
     }
-  
+
     console.log("Processing user message with RAG");
     // Validoidaan metatieto Zod-skeeman avulla
     const { success, data } = selectionSchema.safeParse(providerMetadata);
@@ -60,15 +65,18 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       }
       return params;
     }
-    
-    console.log('---------RECENT MESSAGE---------');
+
+    console.log("---------RECENT MESSAGE---------");
     console.log("Recent message:", JSON.stringify(recentMessage, null, 2));
     // Poimitaan viestin tekstisisältö
     const lastUserMessageContent = recentMessage.content
       .filter((content) => content.type === "text")
       .map((content) => content.text)
       .join("\n");
-    console.log("---------LAST USER MESSAGE CONTENT---------", lastUserMessageContent);
+    console.log(
+      "---------LAST USER MESSAGE CONTENT---------",
+      lastUserMessageContent,
+    );
     // Luokitellaan käyttäjän viesti kysymykseksi, väitteeksi tai muuksi
     const { object: classification } = await generateObject({
       model: openai("gpt-4o-mini", { structuredOutputs: true }),
@@ -109,7 +117,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       ...chunk,
       similarity: cosineSimilarity(
         hypotheticalAnswerEmbedding,
-        chunk.embedding
+        chunk.embedding,
       ),
     }));
     console.log("Chunks with similarity calculated");

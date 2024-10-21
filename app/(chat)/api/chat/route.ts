@@ -29,7 +29,8 @@ export async function POST(request: Request) {
     },
     maxSteps: 5,
     onFinish: async ({ text }) => {
-      if (text.trim() !== '') {  // Lisää tämä tarkistus
+      if (text.trim() !== "") {
+        // Lisää tämä tarkistus
         await createMessage({
           id,
           messages: [...messages, { role: "assistant", content: text }],

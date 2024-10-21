@@ -24,8 +24,8 @@ export async function POST(request: Request) {
   if (!id) {
     return Response.json("Chat ID is required", { status: 400 });
   }
-  console.log('kutsuttu deleteChatById idllä ', id);
-  
+  console.log("kutsuttu deleteChatById idllä ", id);
+
   await deleteChatById({ id });
   return Response.json({ success: true });
 }
