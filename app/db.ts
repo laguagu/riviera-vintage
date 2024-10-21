@@ -7,7 +7,7 @@ import postgres from "postgres";
 // Optionally, if not using email/pass login, you can
 // use the Drizzle adapter for Auth.js / NextAuth
 // https://authjs.dev/reference/adapter/drizzle
-const connectionString = `${process.env.POSTGRES_URL!}?sslmode=require`;
+const connectionString = `${process.env.POSTGRES_URL!}`;
 const client = postgres(connectionString, { max: 10 }); // Määritä poolin koko
 const db = drizzle(client);
 

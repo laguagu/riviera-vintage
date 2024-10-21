@@ -36,6 +36,7 @@
     "next-auth": "^5.0.0-beta.25",
     "pdf-parse": "^1.1.1",
     "postgres": "^3.4.4",
+    "prettier": "^3.3.3",
     "react": "19.0.0-rc-7771d3a7-20240827",
     "react-dom": "19.0.0-rc-7771d3a7-20240827",
     "react-hook-form": "^7.53.0",

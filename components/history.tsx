@@ -15,8 +15,6 @@ export const History = () => {
   const router = useRouter();
   const { id } = useParams();
   const pathname = usePathname();
-  console.log("pathname", pathname);
-  console.log("id", id);
 
   const deleteChat = async (chatId: string) => {
     const response = await fetch("/api/history", {
