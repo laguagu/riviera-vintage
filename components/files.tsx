@@ -58,7 +58,7 @@ export const Files = ({
         className={cx(
           "fixed p-4 flex flex-col gap-4 bg-white dark:bg-zinc-800 z-30",
           { "w-dvw h-96 bottom-0 right-0": !isDesktop },
-          { "w-[600px] h-96 rounded-lg": isDesktop },
+          { "w-[600px] h-96 rounded-lg": isDesktop }
         )}
         initial={{
           y: "100%",
@@ -95,13 +95,35 @@ export const Files = ({
               if (file) {
                 setUploadQueue((currentQueue) => [...currentQueue, file.name]);
 
-                await fetch(`/api/files/upload?filename=${file.name}`, {
-                  method: "POST",
-                  body: file,
-                });
+                const response = await fetch(
+                  `/api/files/upload?filename=${file.name}`,
+                  {
+                    method: "POST",
+                    body: file,
+                  }
+                );
+
+                // Jos autentikointi epäonnistui, tyhjennä nykyiset tunnukset
+                if (response.status === 401) {
+                  // Näytä virheilmoitus
+                  alert("Väärät tunnukset. Yritä uudelleen.");
+                  // Tyhjennä upload queue
+                  setUploadQueue((currentQueue) =>
+                    currentQueue.filter((filename) => filename !== file.name)
+                  );
+                  // Tyhjennä input
+                  if (inputFileRef.current) {
+                    inputFileRef.current.value = "";
+                  }
+                  return;
+                }
+
+                if (!response.ok) {
+                  throw new Error("Upload failed");
+                }
 
                 setUploadQueue((currentQueue) =>
-                  currentQueue.filter((filename) => filename !== file.name),
+                  currentQueue.filter((filename) => filename !== file.name)
                 );
 
                 mutate([...(files || []), { pathname: file.name }]);
@@ -165,7 +187,7 @@ export const Files = ({
                   setSelectedFilePathnames((currentSelections) => {
                     if (currentSelections.includes(file.pathname)) {
                       return currentSelections.filter(
-                        (path) => path !== file.pathname,
+                        (path) => path !== file.pathname
                       );
                     } else {
                       return [...currentSelections, file.pathname];
@@ -179,7 +201,7 @@ export const Files = ({
                     selectedFilePathnames.includes(file.pathname) &&
                       !deleteQueue.includes(file.pathname)
                       ? "text-blue-600 dark:text-zinc-50"
-                      : "text-zinc-500",
+                      : "text-zinc-500"
                   )}
                 >
                   {deleteQueue.includes(file.pathname) ? (
@@ -208,18 +230,40 @@ export const Files = ({
                     file.pathname,
                   ]);
 
-                  await fetch(`/api/files/delete?fileurl=${file.url}`, {
-                    method: "DELETE",
-                  });
+                  let response = await fetch(
+                    `/api/files/delete?fileurl=${file.url}`,
+                    {
+                      method: "DELETE",
+                    }
+                  );
+
+                  if (response.status === 401) {
+                    // Näytä virheilmoitus
+                    alert("Väärät tunnukset. Yritä uudelleen.");
+                    // Tyhjennä delete queue
+                    setDeleteQueue((currentQueue) =>
+                      currentQueue.filter(
+                        (filename) => filename !== file.pathname
+                      )
+                    );
+                    if (inputFileRef.current) {
+                      inputFileRef.current.value = "";
+                    }
+                    return;
+                  }
+
+                  if (!response.ok) {
+                    throw new Error("Delete failed");
+                  }
 
                   setDeleteQueue((currentQueue) =>
                     currentQueue.filter(
-                      (filename) => filename !== file.pathname,
-                    ),
+                      (filename) => filename !== file.pathname
+                    )
                   );
 
                   setSelectedFilePathnames((currentSelections) =>
-                    currentSelections.filter((path) => path !== file.pathname),
+                    currentSelections.filter((path) => path !== file.pathname)
                   );
 
                   mutate(files.filter((f) => f.pathname !== file.pathname));

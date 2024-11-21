@@ -1,9 +1,13 @@
 import { auth } from "@/app/(auth)/auth";
 import { deleteChunksByFilePath } from "@/app/db";
-import { head, del } from "@vercel/blob";
+import { basicAuthMiddleware } from "@/lib/basic-auth";
+import { del, head } from "@vercel/blob";
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
+
+  const authResponse = basicAuthMiddleware(request);
+  if (authResponse) return authResponse;
 
   let session = await auth();
 

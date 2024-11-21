@@ -1,5 +1,6 @@
 import { auth } from "@/app/(auth)/auth";
 import { insertChunks } from "@/app/db";
+import { basicAuthMiddleware } from "@/lib/basic-auth";
 import { getPdfContentFromUrl } from "@/utils/pdf";
 import { openai } from "@ai-sdk/openai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
@@ -9,6 +10,9 @@ import { embedMany } from "ai";
 export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
   const filename = searchParams.get("filename");
+
+  const authResponse = basicAuthMiddleware(request);
+  if (authResponse) return authResponse;
 
   let session = await auth();
 
