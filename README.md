@@ -50,16 +50,6 @@ Jos sinulla on jo Vercel-tili ja tietokanta alustettuna:
    npm run dev
    ```
 
-## Ympäristömuuttujat
-
-Luo `.env.local` tiedosto seuraavilla muuttujilla:
-
-```env
-POSTGRES_URL=postgres_yhteysmerkkijono
-NEXT_PUBLIC_SERPER_API_KEY=serper_api_avain
-# Lisää muut tarvittavat API-avaimet
-```
-
 ## Tietokannan asennus
 
 Projekti käyttää Vercel Postgres ja Drizzle ORM:ää. Tietokanta alustetaan automaattisesti komennolla:
