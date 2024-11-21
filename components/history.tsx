@@ -126,7 +126,7 @@ export const History = () => {
                 {!isLoading && history?.length === 0 && !error ? (
                   <div className="text-zinc-500 h-dvh w-full flex flex-row justify-center items-center text-sm gap-2">
                     <InfoIcon />
-                    <div>Chat historiia ei löytynyt</div>
+                    <div>Chat historiaa ei löytynyt</div>
                   </div>
                 ) : null}
 
