@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "tsx migrate.ts && next build",
+    "build": "next build",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "npx tsx migrate.ts",
     "start": "next start",
