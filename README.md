@@ -126,7 +126,7 @@ Sovelluksessa on kaksi käyttäjäroolia:
 Admin-oikeuksien antaminen käyttäjälle kannassasi:
 
 ````sql
-UPDATE "User" SET role = 'admin' WHERE email = 'user@example.com';
+UPDATE "User" SET role = 'admin' WHERE email = 'user@example.com'
 ```
 
 ### Antiikkiliikkeiden haku
