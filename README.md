@@ -125,7 +125,7 @@ Sovelluksessa on kaksi käyttäjäroolia:
 
 Admin-oikeuksien antaminen käyttäjälle kannassasi:
 
-````sql
+```sql
 UPDATE "User" SET role = 'admin' WHERE email = 'user@example.com'
 ```
 
@@ -137,7 +137,7 @@ Sovellus sisältää erityistyökalun antiikkiliikkeiden hakuun Suomessa käytt�
   tools: {
       searchAntiqueStores: searchSerperLocations,
     },
-````
+```
 
 ## Tiedostojen jakamistila (STORAGE_MODE)
 
