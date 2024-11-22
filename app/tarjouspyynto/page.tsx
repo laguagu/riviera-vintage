@@ -99,10 +99,13 @@ export default function HuonekalujenTarjouspyyntolomake() {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto mb-8 mt-20">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 px-5">
-          <div className="text-lg tec">Tarjouspyyntö</div>
+          <div className="text-lg tec">
+            Tarjouspyyntö - Huom! Vain template. Tämä ei tee mitään painiketta
+            painettaessa.
+          </div>
           <FormField
             control={form.control}
             name="companyName"

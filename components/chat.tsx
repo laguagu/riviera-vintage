@@ -17,9 +17,9 @@ const suggestedActions = [
     action: "mikä on näiden asiakirjojen yhteenveto?",
   },
   {
-    title: "Kuka on kirjoittaja",
-    label: "valituista asiakirjoista?",
-    action: "kuka on näiden asiakirjojen kirjoittaja?",
+    title: "Antiikki liikkeiden aukioloajat",
+    label: "Helsingissä tänään",
+    action: `Antiikki liikkeiden aukioloajat Helsingissä ${new Date().toLocaleDateString()}`,
   },
 ];
 
@@ -168,6 +168,7 @@ export function Chat({
             setIsFilesVisible={setIsFilesVisible}
             selectedFilePathnames={selectedFilePathnames}
             setSelectedFilePathnames={setSelectedFilePathnames}
+            session={session}
           />
         )}
       </AnimatePresence>

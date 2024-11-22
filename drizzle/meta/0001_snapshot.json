@@ -1,6 +1,6 @@
 {
-  "id": "7886d11e-2e3d-42a0-80b9-52733a0d82c7",
-  "prevId": "3f8197c3-143f-4add-b4d7-2c893c46de0f",
+  "id": "227d1746-d02e-4453-be23-02f0ac07f990",
+  "prevId": "7886d11e-2e3d-42a0-80b9-52733a0d82c7",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -39,12 +39,8 @@
           "name": "Chat_author_User_email_fk",
           "tableFrom": "Chat",
           "tableTo": "User",
-          "columnsFrom": [
-            "author"
-          ],
-          "columnsTo": [
-            "email"
-          ],
+          "columnsFrom": ["author"],
+          "columnsTo": ["email"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -79,30 +75,10 @@
           "type": "real[]",
           "primaryKey": false,
           "notNull": true
-        },
-        "uploaded_by": {
-          "name": "uploaded_by",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
-      "foreignKeys": {
-        "Chunk_uploaded_by_User_email_fk": {
-          "name": "Chunk_uploaded_by_User_email_fk",
-          "tableFrom": "Chunk",
-          "tableTo": "User",
-          "columnsFrom": [
-            "uploaded_by"
-          ],
-          "columnsTo": [
-            "email"
-          ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
-        }
-      },
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -124,9 +100,9 @@
         },
         "role": {
           "name": "role",
-          "type": "varchar(10)",
+          "type": "varchar(20)",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "'user'"
         }
       },

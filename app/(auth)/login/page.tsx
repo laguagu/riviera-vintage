@@ -40,14 +40,14 @@ export default function Page() {
         <Form action={formAction}>
           <SubmitButton>Kirjaudu</SubmitButton>
           <p className="text-center text-sm text-gray-600 mt-4 dark:text-zinc-400">
-            {"Don't have an account? "}
+            {"Ei käyttäjä tiliä? "}
             <Link
               href="/register"
               className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
             >
-              Sign up
+              Rekisteröidy
             </Link>
-            {" for free."}
+            {" ilmaiseksi. (Ei käytössä tässä versiossa)"}
           </p>
         </Form>
       </div>

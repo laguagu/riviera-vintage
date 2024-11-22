@@ -9,8 +9,9 @@ Retrieval-Augmented Generation (RAG) chatbot-toteutus, joka on rakennettu käytt
 - 🔍 Älykäs dokumenttien pilkkominen ja upottaminen
 - 🗄️ PostgreSQL-tietokantaintegraatio upotuksien tallentamiseen
 - 🔐 Käyttäjien tunnistautuminen
-- 📍 Erityisominaisuus: Antiikkiliikkeiden haku Suomessa
 - ⚡ Rakennettu Vercelin serverless-infrastruktuuriin
+- 👥 Käyttäjäroolit (user/admin)
+- 🔍 Integroitu Google-haku antiikkiliikkeille Serper API:n kautta
 
 ## Vaatimukset
 
@@ -20,7 +21,7 @@ Ennen aloittamista varmista, että sinulla on:
 - Vercel-tili (https://vercel.com)
 - API-avaimet seuraaville:
   - OpenAI
-  - Serper (antiikkiliikkeiden hakutoimintoa varten)
+  - Serper (antiikkiliikkeiden hakutoimintoa varten) ( Toimii myös ilman, mutta chatbot heittää virheen jos kysymys liittyy antiikkiliikkeisiin)
 
 ## Aloittaminen
 
@@ -38,7 +39,7 @@ Jos sinulla ei ole vielä Vercel-tiliä tai alustettua tietokantaa:
 6. Luo PostgreSQL-tietokanta Vercelin kautta
 7. Alusta tietokanta:
    ```bash
-   npm run build
+   npm db:migrate
    ```
    Tämä ajaa migraatiot käyttäen Drizzle ORM:ää.
 
@@ -55,10 +56,17 @@ Jos sinulla on jo Vercel-tili ja tietokanta alustettuna:
 Projekti käyttää Vercel Postgres ja Drizzle ORM:ää. Tietokanta alustetaan automaattisesti komennolla:
 
 ```bash
-npm run build
+npm db:migrate
 ```
 
 Tämä suorittaa migraatioskriptin (`migrate.ts`), joka luo kaikki tarvittavat taulut.
+
+Jos teet muutoksia tietokantaskeemaan (`schema.ts`):
+
+```bash
+npm run db:generate   # Generoi uudet migraatiot
+npm run db:migrate   # Aja migraatiot
+```
 
 ## Tunnistautuminen
 
@@ -101,7 +109,25 @@ Koska sovellus käyttää Vercelin ilmaista tasoa:
 - Huomioi kuukausittaiset serverless-funktioiden suoritusrajoitukset
 - Huomioi tietokannan tallennustilan rajoitukset
 
-## Erityisominaisuudet
+## Käyttäjäroolit ja oikeudet
+
+Sovelluksessa on kaksi käyttäjäroolia:
+
+- **User**: Peruskäyttäjä, joka voi:
+  - Käyttää chatbottia
+  - Selata tietopankin dokumentteja
+  - Valita dokumentteja chatbotin käyttöön
+- **Admin**: Ylläpitäjä, joka voi:
+  - Kaikki peruskäyttäjän oikeudet
+  - Lisätä uusia dokumentteja tietopankkiin
+  - Poistaa dokumentteja tietopankista
+  - Hallinnoida tietopankkia
+
+Admin-oikeuksien antaminen käyttäjälle kannassasi:
+
+````sql
+UPDATE "User" SET role = 'admin' WHERE email = 'user@example.com';
+```
 
 ### Antiikkiliikkeiden haku
 
@@ -111,7 +137,29 @@ Sovellus sisältää erityistyökalun antiikkiliikkeiden hakuun Suomessa käytt�
   tools: {
       searchAntiqueStores: searchSerperLocations,
     },
+````
+
+## Tiedostojen jakamistila (STORAGE_MODE)
+
+Sovellus tukee kahta eri tiedostojen jakamistilaa:
+
+- **shared**: Kaikki tiedostot ovat jaettuja kaikkien käyttäjien kesken. Sopii esim. organisaation yhteiselle tietopankille.
+- **user-specific**: Jokaisella käyttäjällä on oma tiedostokansionsa. Sopii kun käyttäjien tiedot halutaan pitää erillään.
+
+Valitse sopiva tila asettamalla `STORAGE_MODE` ympäristömuuttuja:
+
+```bash
+STORAGE_MODE="shared"        # Jaettu tiedostopankki
+# tai
+STORAGE_MODE="user-specific" # Käyttäjäkohtaiset tiedostot
 ```
+
+## Antiikkiliikkeiden haku
+
+Chatbot sisältää erityistyökalun antiikkiliikkeiden hakuun Suomessa käyttäen Serper API:a. Voit kysyä chatbotilta esimerkiksi:
+
+- "Etsi antiikkiliikkeitä Helsingistä"
+- "Mistä löydän antiikkiliikkeitä Tampereelta?"
 
 ## Tekninen toteutus
 

@@ -1,4 +1,18 @@
-import { NextAuthConfig } from "next-auth";
+import { DefaultSession, NextAuthConfig, Session } from "next-auth";
+import { JWT } from "next-auth/jwt";
+
+export interface CustomSession extends Session {
+  user?: {
+    id?: string;
+    email?: string | null;
+    role?: string;
+  } & DefaultSession["user"];
+}
+
+interface SessionCallbackParams {
+  session: CustomSession;
+  token: JWT & { role?: string };
+}
 
 export const authConfig = {
   pages: {
@@ -14,8 +28,12 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       let isLoggedIn = !!auth?.user;
       let isOnChat = nextUrl.pathname.startsWith("/");
-      // let isOnRegister = nextUrl.pathname.startsWith("/register"); // not used
       let isOnLogin = nextUrl.pathname.startsWith("/login");
+
+      // Ohjaa kaikki /register -pyynnöt login-sivulle poista tämä jos haluat rekisteröitymisen
+      if (nextUrl.pathname.startsWith("/register")) {
+        return Response.redirect(new URL("/login", nextUrl));
+      }
 
       if (isLoggedIn && isOnLogin) {
         return Response.redirect(new URL("/", nextUrl));
@@ -35,6 +53,18 @@ export const authConfig = {
       }
 
       return true;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.role = (user as { role?: string }).role;
+      }
+      return token;
+    },
+    async session({ session, token }: SessionCallbackParams) {
+      if (session.user) {
+        session.user.role = token.role;
+      }
+      return session;
     },
   },
 } satisfies NextAuthConfig;

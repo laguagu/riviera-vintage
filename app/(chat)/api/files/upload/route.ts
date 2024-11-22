@@ -1,23 +1,25 @@
 import { auth } from "@/app/(auth)/auth";
 import { insertChunks } from "@/app/db";
-import { basicAuthMiddleware } from "@/lib/basic-auth";
 import { getPdfContentFromUrl } from "@/utils/pdf";
 import { openai } from "@ai-sdk/openai";
 import { RecursiveCharacterTextSplitter } from "@langchain/textsplitters";
 import { put } from "@vercel/blob";
 import { embedMany } from "ai";
+import { StorageMode } from "../list/route";
+import { CustomSession } from "@/app/(auth)/auth.config";
 
 export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
   const filename = searchParams.get("filename");
 
-  const authResponse = basicAuthMiddleware(request);
-  if (authResponse) return authResponse;
+  let session = (await auth()) as CustomSession | null;
 
-  let session = await auth();
-
-  if (!session) {
+  if (!session || !session.user) {
     return Response.redirect("/login");
+  }
+
+  if (session.user.role !== "admin") {
+    return new Response("Unauthorized: Admin access required", { status: 403 });
   }
 
   const { user } = session;
@@ -30,7 +32,15 @@ export async function POST(request: Request) {
     return new Response("Request body is empty", { status: 400 });
   }
 
-  const { downloadUrl } = await put(`${user.email}/${filename}`, request.body, {
+  const storageMode =
+    (process.env.STORAGE_MODE as StorageMode) || "user-specific";
+
+  const filepath =
+    storageMode === "shared"
+      ? `haaga-helia-admin@alya.fi/${filename}`
+      : `${user.email}/${filename}`;
+
+  const { downloadUrl } = await put(`${filepath}`, request.body, {
     access: "public",
   });
 
@@ -47,8 +57,8 @@ export async function POST(request: Request) {
 
   await insertChunks({
     chunks: chunkedContent.map((chunk, i) => ({
-      id: `${user.email}/${filename}/${i}`,
-      filePath: `${user.email}/${filename}`,
+      id: `${filepath}/${i}`,
+      filePath: `${filepath}`,
       content: chunk.pageContent,
       embedding: embeddings[i],
     })),

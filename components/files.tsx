@@ -1,5 +1,6 @@
 "use client";
 
+import { CustomSession } from "@/app/(auth)/auth.config";
 import { fetcher } from "@/utils/functions";
 import cx from "classnames";
 import { motion } from "framer-motion";
@@ -19,10 +20,12 @@ export const Files = ({
   selectedFilePathnames,
   setSelectedFilePathnames,
   setIsFilesVisible,
+  session,
 }: {
   selectedFilePathnames: string[];
   setSelectedFilePathnames: Dispatch<SetStateAction<string[]>>;
   setIsFilesVisible: Dispatch<SetStateAction<boolean>>;
+  session: CustomSession | null;
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [uploadQueue, setUploadQueue] = useState<Array<string>>([]);
@@ -41,6 +44,9 @@ export const Files = ({
 
   const { width } = useWindowSize();
   const isDesktop = width > 768;
+  const isAdmin = session?.user?.role === "admin";
+
+  console.log("isAdmin", isAdmin);
 
   const drawerRef = useRef(null);
   useOnClickOutside([drawerRef], () => {
@@ -58,7 +64,7 @@ export const Files = ({
         className={cx(
           "fixed p-4 flex flex-col gap-4 bg-white dark:bg-zinc-800 z-30",
           { "w-dvw h-96 bottom-0 right-0": !isDesktop },
-          { "w-[600px] h-96 rounded-lg": isDesktop }
+          { "w-[600px] h-96 rounded-lg": isDesktop },
         )}
         initial={{
           y: "100%",
@@ -78,6 +84,11 @@ export const Files = ({
           <div className="text-sm flex flex-row gap-3">
             <div className="text-zinc-900 dark:text-zinc-300">
               Hallinnoi Chatbotin tietopankkia
+              <span className="text-xs text-zinc-500 block mt-1">
+                {isAdmin
+                  ? "Admin-oikeudet"
+                  : "Vain luku -tila (vain admin voi lisätä ja poistaa tiedostoja)"}
+              </span>
             </div>
           </div>
 
@@ -95,35 +106,13 @@ export const Files = ({
               if (file) {
                 setUploadQueue((currentQueue) => [...currentQueue, file.name]);
 
-                const response = await fetch(
-                  `/api/files/upload?filename=${file.name}`,
-                  {
-                    method: "POST",
-                    body: file,
-                  }
-                );
-
-                // Jos autentikointi epäonnistui, tyhjennä nykyiset tunnukset
-                if (response.status === 401) {
-                  // Näytä virheilmoitus
-                  alert("Väärät tunnukset. Yritä uudelleen.");
-                  // Tyhjennä upload queue
-                  setUploadQueue((currentQueue) =>
-                    currentQueue.filter((filename) => filename !== file.name)
-                  );
-                  // Tyhjennä input
-                  if (inputFileRef.current) {
-                    inputFileRef.current.value = "";
-                  }
-                  return;
-                }
-
-                if (!response.ok) {
-                  throw new Error("Upload failed");
-                }
+                await fetch(`/api/files/upload?filename=${file.name}`, {
+                  method: "POST",
+                  body: file,
+                });
 
                 setUploadQueue((currentQueue) =>
-                  currentQueue.filter((filename) => filename !== file.name)
+                  currentQueue.filter((filename) => filename !== file.name),
                 );
 
                 mutate([...(files || []), { pathname: file.name }]);
@@ -132,10 +121,18 @@ export const Files = ({
           />
 
           <div
-            className="bg-zinc-900 text-zinc-50 hover:bg-zinc-800 flex flex-row gap-2 items-center dark:text-zinc-800 text-sm dark:bg-zinc-100 rounded-md p-1 px-2 dark:hover:bg-zinc-200 cursor-pointer"
+            className={cx(
+              "flex flex-row gap-2 items-center text-sm rounded-md p-1 px-2",
+              isAdmin
+                ? "bg-zinc-900 text-zinc-50 hover:bg-zinc-800 dark:text-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 cursor-pointer"
+                : "bg-zinc-200 text-zinc-500 dark:bg-zinc-700 dark:text-zinc-400 cursor-not-allowed",
+            )}
             onClick={() => {
-              inputFileRef.current?.click();
+              if (isAdmin) {
+                inputFileRef.current?.click();
+              }
             }}
+            title={!isAdmin ? "Vain admin voi lisätä tiedostoja" : ""}
           >
             <UploadIcon />
             <div>Lataa tiedosto</div>
@@ -187,7 +184,7 @@ export const Files = ({
                   setSelectedFilePathnames((currentSelections) => {
                     if (currentSelections.includes(file.pathname)) {
                       return currentSelections.filter(
-                        (path) => path !== file.pathname
+                        (path) => path !== file.pathname,
                       );
                     } else {
                       return [...currentSelections, file.pathname];
@@ -201,7 +198,7 @@ export const Files = ({
                     selectedFilePathnames.includes(file.pathname) &&
                       !deleteQueue.includes(file.pathname)
                       ? "text-blue-600 dark:text-zinc-50"
-                      : "text-zinc-500"
+                      : "text-zinc-500",
                   )}
                 >
                   {deleteQueue.includes(file.pathname) ? (
@@ -223,51 +220,44 @@ export const Files = ({
               </div>
 
               <div
-                className="text-zinc-500 hover:bg-red-100 dark:text-zinc-500 hover:dark:bg-zinc-700 hover:text-red-500 p-1 px-2 cursor-pointer rounded-md"
+                className={cx(
+                  "p-1 px-2 rounded-md",
+                  isAdmin
+                    ? "text-zinc-500 hover:bg-red-100 dark:text-zinc-500 hover:dark:bg-zinc-700 hover:text-red-500 cursor-pointer"
+                    : "text-zinc-300 dark:text-zinc-600 cursor-not-allowed",
+                )}
                 onClick={async () => {
-                  setDeleteQueue((currentQueue) => [
-                    ...currentQueue,
-                    file.pathname,
-                  ]);
+                  if (isAdmin) {
+                    // Lisätään tarkistus tähän
+                    setDeleteQueue((currentQueue) => [
+                      ...currentQueue,
+                      file.pathname,
+                    ]);
 
-                  let response = await fetch(
-                    `/api/files/delete?fileurl=${file.url}`,
-                    {
+                    await fetch(`/api/files/delete?fileurl=${file.url}`, {
                       method: "DELETE",
-                    }
-                  );
+                    });
 
-                  if (response.status === 401) {
-                    // Näytä virheilmoitus
-                    alert("Väärät tunnukset. Yritä uudelleen.");
-                    // Tyhjennä delete queue
                     setDeleteQueue((currentQueue) =>
                       currentQueue.filter(
-                        (filename) => filename !== file.pathname
-                      )
+                        (filename) => filename !== file.pathname,
+                      ),
                     );
-                    if (inputFileRef.current) {
-                      inputFileRef.current.value = "";
-                    }
-                    return;
+
+                    setSelectedFilePathnames((currentSelections) =>
+                      currentSelections.filter(
+                        (path) => path !== file.pathname,
+                      ),
+                    );
+
+                    mutate(files.filter((f) => f.pathname !== file.pathname));
                   }
-
-                  if (!response.ok) {
-                    throw new Error("Delete failed");
-                  }
-
-                  setDeleteQueue((currentQueue) =>
-                    currentQueue.filter(
-                      (filename) => filename !== file.pathname
-                    )
-                  );
-
-                  setSelectedFilePathnames((currentSelections) =>
-                    currentSelections.filter((path) => path !== file.pathname)
-                  );
-
-                  mutate(files.filter((f) => f.pathname !== file.pathname));
                 }}
+                title={
+                  !isAdmin
+                    ? "Vain admin voi poistaa tiedostoja"
+                    : "Poista tiedosto"
+                }
               >
                 <TrashIcon />
               </div>

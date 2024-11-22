@@ -1,18 +1,19 @@
 import { auth } from "@/app/(auth)/auth";
+import { CustomSession } from "@/app/(auth)/auth.config";
 import { deleteChunksByFilePath } from "@/app/db";
-import { basicAuthMiddleware } from "@/lib/basic-auth";
 import { del, head } from "@vercel/blob";
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url);
 
-  const authResponse = basicAuthMiddleware(request);
-  if (authResponse) return authResponse;
+  let session = (await auth()) as CustomSession | null;
 
-  let session = await auth();
-
-  if (!session) {
+  if (!session || !session.user) {
     return Response.redirect("/login");
+  }
+
+  if (session.user.role !== "admin") {
+    return new Response("Unauthorized: Admin access required", { status: 403 });
   }
 
   const { user } = session;

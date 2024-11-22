@@ -1,4 +1,5 @@
 import { auth } from "@/app/(auth)/auth";
+import { StorageMode } from "@/app/(chat)/api/files/list/route";
 import { getChunksByFilePaths } from "@/app/db";
 import { openai } from "@ai-sdk/openai";
 import {
@@ -108,9 +109,17 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
     });
     console.log("Hypothetical answer embedding created");
     // Haetaan relevantit tekstikappaleet valituista tiedostoista
+    const storageMode =
+      (process.env.STORAGE_MODE as StorageMode) || "user-specific";
+
     const chunksBySelection = await getChunksByFilePaths({
-      filePaths: selection.map((path) => `${session.user?.email}/${path}`),
+      filePaths: selection.map((path) =>
+        storageMode === "shared"
+          ? `haaga-helia-admin@alya.fi/${path}`
+          : `${session.user?.email}/${path}`,
+      ),
     });
+
     console.log("Number of chunks retrieved:", chunksBySelection.length);
     // Lasketaan samankaltaisuus hypoteettisen vastauksen ja tekstikappaleiden välillä
     const chunksWithSimilarity = chunksBySelection.map((chunk) => ({
