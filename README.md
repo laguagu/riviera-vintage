@@ -225,4 +225,4 @@ graph TD
 
 ## Lisenssi
 
-MIT License - katso [LICENSE](LICENSE) tiedosto lisätietoja varten.
+License - katso [LICENSE](LICENSE) tiedosto lisätietoja varten.
