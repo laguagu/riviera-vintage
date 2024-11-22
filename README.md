@@ -51,7 +51,7 @@ Jos sinulla on jo Vercel-tili ja tietokanta alustettuna:
    npm run dev
    ```
 
-## Tietokannan asennus
+## Muutokset tietokantaan
 
 Projekti käyttää Vercel Postgres ja Drizzle ORM:ää. Tietokanta alustetaan automaattisesti komennolla:
 

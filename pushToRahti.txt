@@ -1,0 +1,11 @@
+docker build --no-cache -t riviera-vintage .
+docker run -p 3000:3000 riviera-vintage
+docker run --env-file .env.local -p 3000:3000 riviera-vintage  // env tiedoston kanssa.
+
+Rahti 2 - Rahti Image registry
+docker tag riviera-vintage image-registry.apps.2.rahti.csc.fi/alyakokeilut/riviera-vintage:latest
+docker login -u g -p $(oc whoami -t) image-registry.apps.2.rahti.csc.fi
+docker push image-registry.apps.2.rahti.csc.fi/alyakokeilut/riviera-vintage:latest
+
+-Tarkista imagestream
+oc get imagestream
