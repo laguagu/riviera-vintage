@@ -86,7 +86,7 @@ export const Files = ({
               Hallinnoi Chatbotin tietopankkia
               <span className="text-xs text-zinc-500 block mt-1">
                 {isAdmin
-                  ? "Admin-oikeudet"
+                  ? "Admin-oikeudet (vain PDF-tiedostot)" 
                   : "Vain luku -tila (vain admin voi lisätä ja poistaa tiedostoja)"}
               </span>
             </div>

@@ -108,6 +108,7 @@ Koska sovellus käyttää Vercelin ilmaista tasoa:
 - Vältä tarpeettoman suurien tiedostojen lataamista
 - Huomioi kuukausittaiset serverless-funktioiden suoritusrajoitukset
 - Huomioi tietokannan tallennustilan rajoitukset
+- Tietopankkiin voi lisätä tällä hetkellä vain PDF tiedostoja
 
 ## Käyttäjäroolit ja oikeudet
 
