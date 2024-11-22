@@ -179,6 +179,49 @@ Chatbot sisältää erityistyökalun antiikkiliikkeiden hakuun Suomessa käyttä
 - Suojaa API-avaimesi ja ympäristömuuttujat
 - Harkitse maksullisiin tasoihin siirtymistä, jos tarvitset korkeampia käyttörajoja
 
+## Käyttöliittymä ja toiminnallisuus
+
+### Tiedostojen valinta ja kontekstin luonti
+
+Käyttäjä voi valita yhden tai useamman tiedoston tietopankista chatbotin kontekstiksi. Tiedostoja ei ole pakko valita, jolloin chatbot toimii ilman dokumenttikontekstia.
+
+![Tiedostojen valinta](./public/file-selection.png)
+
+### Chatbotin toiminta
+
+Kun käyttäjä kysyy kysymyksen, chatbot analysoi sen ja hyödyntää valittuja dokumentteja vastauksessaan:
+
+![Chatbot keskustelu](./public/chat-conversation.png)
+
+### Middleware-logiikka
+
+Chatbot hyödyntää [Vercel AI SDK:n middleware-toiminnallisuutta](https://sdk.vercel.ai/docs/ai-sdk-core/middleware). Jokainen käyttäjän viesti kulkee middleware-kerroksen läpi seuraavan prosessin mukaisesti:
+
+1. Middleware vastaanottaa käyttäjän viestin
+2. Viesti luokitellaan (kysymys, väite tai muu)
+3. Jos viesti on kysymys:
+
+- Haetaan valituista dokumenteista relevantit osat
+- Luodaan hypoteettinen vastaus kysymykseen
+- Yhdistetään dokumenttikonteksti ja hypoteettinen vastaus
+
+4. Jos viesti on muu kuin kysymys:
+
+- Edetään suoraan kielimalliin
+
+5. Kielimalli generoi lopullisen vastauksen
+
+```mermaid
+graph TD
+   A[Käyttäjän viesti] --> B[Middleware]
+   B --> C[Viestin luokittelu]
+   C -- Kysymys --> D[Dokumenttihaku]
+   D --> E[Kontekstin yhdistäminen]
+   C -- Muu viesti --> F[Kielimalli]
+   E --> F
+   F --> G[Vastaus käyttäjälle]
+```
+
 ## Lisenssi
 
 MIT License - katso [LICENSE](LICENSE) tiedosto lisätietoja varten.
