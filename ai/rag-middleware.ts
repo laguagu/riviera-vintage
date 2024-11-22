@@ -22,62 +22,42 @@ const selectionSchema = z.object({
 export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
   // transformParams-funktio suoritetaan ennen jokaista kielimallipyyntöä
   transformParams: async ({ params }) => {
-    console.log("RAG middleware started");
-    console.log(
-      "------------------------------------------------------------------------------------",
-    );
-
     // Tarkistetaan käyttäjän istunto
     const session = await auth();
     if (!session) return params; // Jos istuntoa ei ole, palautetaan parametrit muuttumattomina
 
-    console.log("User session:", session.user?.email);
     const { prompt: messages, providerMetadata } = params;
-    console.log(
-      "Provider metadata:",
-      JSON.stringify(providerMetadata, null, 2),
-    );
     if (
       messages.length === 0 ||
       messages[messages.length - 1].role !== "user"
     ) {
-      console.log("Last message is not from user, skipping RAG processing");
       return params;
     }
 
-    console.log("Processing user message with RAG");
     // Validoidaan metatieto Zod-skeeman avulla
     const { success, data } = selectionSchema.safeParse(providerMetadata);
     if (!success) {
-      console.log("Provider metadata validation failed");
       return params;
     } // Jos validointi epäonnistuu, palautetaan parametrit muuttumattomina
 
     const selection = data.files.selection;
-    console.log("Selected files:", selection);
     // Tarkistetaan, onko viimeinen viesti käyttäjältä
 
     // Käsitellään viimeisin viesti
     const recentMessage = messages.pop();
     if (!recentMessage || recentMessage.role !== "user") {
-      console.log("No recent user message, returning original params");
       if (recentMessage) {
         messages.push(recentMessage);
       }
       return params;
     }
 
-    console.log("---------RECENT MESSAGE---------");
-    console.log("Recent message:", JSON.stringify(recentMessage, null, 2));
     // Poimitaan viestin tekstisisältö
     const lastUserMessageContent = recentMessage.content
       .filter((content) => content.type === "text")
       .map((content) => content.text)
       .join("\n");
-    console.log(
-      "---------LAST USER MESSAGE CONTENT---------",
-      lastUserMessageContent,
-    );
+
     // Luokitellaan käyttäjän viesti kysymykseksi, väitteeksi tai muuksi
     const { object: classification } = await generateObject({
       model: openai("gpt-4o-mini", { structuredOutputs: true }),
@@ -86,7 +66,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       system: "classify the user message as a question, statement, or other",
       prompt: lastUserMessageContent,
     });
-    console.log("-------------Message classification:", classification);
+
     // RAG-toiminnallisuutta käytetään vain kysymyksiin
     if (classification !== "question") {
       console.log("Not a question, returning original params", params);
@@ -100,14 +80,12 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       system: "Answer the users question:",
       prompt: lastUserMessageContent,
     });
-    console.log("Hypothetical answer:", hypotheticalAnswer);
 
     // Luodaan upotus (embedding) hypoteettiselle vastaukselle
     const { embedding: hypotheticalAnswerEmbedding } = await embed({
       model: openai.embedding("text-embedding-3-small"),
       value: hypotheticalAnswer,
     });
-    console.log("Hypothetical answer embedding created");
     // Haetaan relevantit tekstikappaleet valituista tiedostoista
     const storageMode =
       (process.env.STORAGE_MODE as StorageMode) || "user-specific";
@@ -116,25 +94,22 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       filePaths: selection.map((path) =>
         storageMode === "shared"
           ? `haaga-helia-admin@alya.fi/${path}`
-          : `${session.user?.email}/${path}`,
+          : `${session.user?.email}/${path}`
       ),
     });
 
-    console.log("Number of chunks retrieved:", chunksBySelection.length);
     // Lasketaan samankaltaisuus hypoteettisen vastauksen ja tekstikappaleiden välillä
     const chunksWithSimilarity = chunksBySelection.map((chunk) => ({
       ...chunk,
       similarity: cosineSimilarity(
         hypotheticalAnswerEmbedding,
-        chunk.embedding,
+        chunk.embedding
       ),
     }));
-    console.log("Chunks with similarity calculated");
     // Järjestetään kappaleet samankaltaisuuden mukaan ja valitaan top K
     chunksWithSimilarity.sort((a, b) => b.similarity - a.similarity);
     const k = 10;
     const topKChunks = chunksWithSimilarity.slice(0, k);
-    console.log("Top K chunks selected:", k);
     // Lisätään valitut kappaleet käyttäjän viestiin lisäkontekstina
     messages.push({
       role: "user",
@@ -150,9 +125,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
         })),
       ],
     });
-    console.log("Updated messages with relevant chunks");
-    const updatedParams = { ...params, prompt: messages };
-    console.log("Final params:", JSON.stringify(updatedParams, null, 2));
+    // const updatedParams = { ...params, prompt: messages };
     // Palautetaan päivitetyt parametrit
     return { ...params, prompt: messages }; // voita palauttaa updatedParams sama asia
   },

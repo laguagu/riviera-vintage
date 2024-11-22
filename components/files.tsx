@@ -46,8 +46,6 @@ export const Files = ({
   const isDesktop = width > 768;
   const isAdmin = session?.user?.role === "admin";
 
-  console.log("isAdmin", isAdmin);
-
   const drawerRef = useRef(null);
   useOnClickOutside([drawerRef], () => {
     setIsFilesVisible(false);
