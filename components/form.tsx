@@ -12,7 +12,7 @@ export function Form({
           htmlFor="email"
           className="block text-sm text-zinc-600 dark:text-zinc-400"
         >
-          Sähköposti osoite
+          Sähköpostiosoite
         </label>
         <input
           id="email"
