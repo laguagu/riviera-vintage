@@ -1,6 +1,5 @@
 "use server";
 
-import { AuthError } from "next-auth";
 import { createUser, getUser } from "../db";
 import { signIn } from "./auth";
 
@@ -10,7 +9,7 @@ export interface LoginActionState {
 
 export async function login(
   data: LoginActionState,
-  formData: FormData,
+  formData: FormData
 ): Promise<LoginActionState> {
   try {
     const email = formData.get("email");
@@ -26,23 +25,16 @@ export async function login(
       redirect: false,
     });
 
-    // Tarkistetaan next-auth:in tulos
-    if (!result?.ok || result.error) {
-      // Virheviesti logitetaan kehitystä varten, mutta ei näytetä käyttäjälle
-      console.log("Authentication failed:", result?.error);
+    // NextAuth palauttaa error-kentän jos kirjautuminen epäonnistuu
+    if (result?.error) {
+      console.log("Login failed:", result.error);
       return { status: "failed" };
     }
 
+    // Jos error-kenttää ei ole, kirjautuminen onnistui
     return { status: "success" };
   } catch (error) {
-    // Jos kyseessä on NextAuth:in virhe, käsitellään se hiljaisesti
-    if (error instanceof AuthError) {
-      console.log("NextAuth error:", error.type);
-      return { status: "failed" };
-    }
-
-    // Muut virheet logitetaan
-    console.error("Unexpected login error:", error);
+    console.error("Login error:", error);
     return { status: "failed" };
   }
 }

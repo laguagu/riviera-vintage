@@ -9,7 +9,6 @@ import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import useSWR from "swr";
 import { InfoIcon, MenuIcon, PencilEditIcon, TrashIcon } from "./icons";
-import { buttonVariants } from "./ui/button";
 
 export const History = () => {
   const router = useRouter();
@@ -81,21 +80,6 @@ export const History = () => {
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 400, damping: 40 }}
             >
-              <div className="flex gap-4 justify-center">
-                <Link
-                  className={buttonVariants({ variant: "outline" })}
-                  href={"/"}
-                >
-                  Chat
-                </Link>
-                <Link
-                  className={buttonVariants({ variant: "outline" })}
-                  href={"tarjouspyynto"}
-                >
-                  Tarjouspyyntö
-                </Link>
-              </div>
-
               <div className="text-sm flex flex-row items-center justify-between">
                 <div className="flex flex-row gap-2">
                   <div className="dark:text-zinc-300">Historia</div>
@@ -157,7 +141,7 @@ export const History = () => {
                           "p-2 dark:text-zinc-400 border-b dark:border-zinc-700 text-sm dark:hover:bg-zinc-700 hover:bg-zinc-200 last-of-type:border-b-0 flex-grow",
                           {
                             "dark:bg-zinc-700 bg-zinc-200": id === chat.id,
-                          },
+                          }
                         )}
                       >
                         {chat.messages[0].content as string}
