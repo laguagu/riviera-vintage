@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Particles from "@/components/ui/particles";
+import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Form from "next/form";
 import Link from "next/link";
@@ -18,6 +19,21 @@ import { useRouter } from "next/navigation";
 import { useFormStatus } from "react-dom"; // Lisätään tämä
 import { toast } from "sonner";
 import { login } from "../actions";
+
+export const fadeInUp = {
+  initial: {
+    opacity: 0,
+    y: 20,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeInOut",
+    },
+  },
+};
 
 export default function Page() {
   const router = useRouter();
@@ -40,15 +56,19 @@ export default function Page() {
   }
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900 ">
+    <motion.div
+      initial="initial"
+      animate="animate"
+      variants={fadeInUp}
+      className="flex h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900 "
+    >
       <Particles
         className="absolute inset-0"
         color="#666666"
-        quantity={150}
+        quantity={175}
         staticity={110}
+        ease={30}
         size={0.42}
-        vx={0.04}
-        vy={0.06}
         refresh={false}
       />
       <Card className="w-full max-w-md relative ">
@@ -77,24 +97,15 @@ export default function Page() {
                   required
                 />
               </div>
-
               <div className="grid gap-2">
-                <div className="flex justify-between items-center">
-                  <label htmlFor="password" className="text-sm font-medium">
-                    Salasana
-                  </label>
-                  {/* <Link
-                    href="/reset-password"
-                    className="text-sm text-muted-foreground hover:underline"
-                  >
-                    Unohditko salasanan?
-                  </Link> */}
-                </div>
+                <label htmlFor="password" className="text-sm font-medium">
+                  Salasana
+                </label>
                 <PasswordInput
                   id="password"
                   name="password"
                   placeholder="••••••••"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                 />
               </div>
@@ -115,7 +126,7 @@ export default function Page() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   );
 }
 

@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Particles from "@/components/ui/particles";
+import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Form from "next/form";
 import Link from "next/link";
@@ -18,7 +19,7 @@ import { useRouter } from "next/navigation";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
 import { register } from "../actions";
-
+import { fadeInUp } from "../login/page";
 function SubmitButton() {
   const { pending } = useFormStatus();
 
@@ -59,15 +60,19 @@ export default function Page() {
   }
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900 ">
+    <motion.div
+      initial="initial"
+      animate="animate"
+      variants={fadeInUp}
+      className="flex h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900 "
+    >
       <Particles
         className="absolute inset-0"
         color="#666666"
-        quantity={150}
+        quantity={175}
         staticity={110}
+        ease={30}
         size={0.42}
-        vx={0.04}
-        vy={0.06}
         refresh={false}
       />
       <Card className="w-full max-w-md relative ">
@@ -123,6 +128,6 @@ export default function Page() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </motion.div>
   );
 }
