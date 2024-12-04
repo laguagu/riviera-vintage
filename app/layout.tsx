@@ -4,9 +4,9 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Riviera Vintage Group Oy | AI Chatbot",
+  title: "Antiikki Avustaja | AI Chatbot",
   description:
-    "Tekoälyyn perustuva chatbot, joka auttaa sinua löytämään tietoa ja vastauksia kysymyksiisi.",
+    "Chatbot auttaa sinua löytämään tietoa ja vastauksia kysymyksiisi.",
 };
 
 export default function RootLayout({
@@ -15,10 +15,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="fi">
+      <body className="min-h-screen">
         <Toaster position="top-center" />
-        {/* @ts-ignore */}
         <Navbar />
         {children}
       </body>

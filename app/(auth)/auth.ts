@@ -13,18 +13,28 @@ export const {
   ...authConfig,
   providers: [
     Credentials({
-      async authorize({ email, password }: any) {
-        let user = await getUser(email);
-        if (user.length === 0) return null;
-        let passwordsMatch = await compare(password, user[0].password!);
-        if (passwordsMatch) {
+      async authorize(credentials) {
+        try {
+          const { email, password } = credentials as {
+            email: string;
+            password: string;
+          };
+
+          const user = await getUser(email);
+          if (!user || user.length === 0) return null;
+
+          const passwordsMatch = await compare(password, user[0].password!);
+          if (!passwordsMatch) return null;
+
           return {
-            id: user[0].email, // NextAuth vaatii id:n
+            id: user[0].email,
             email: user[0].email,
             role: user[0].role,
           };
+        } catch (error) {
+          console.error("Auth error:", error);
+          return null;
         }
-        return null;
       },
     }),
   ],

@@ -1,3 +1,6 @@
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+
 export function Form({
   action,
   children,
@@ -6,39 +9,32 @@ export function Form({
   children: React.ReactNode;
 }) {
   return (
-    <form action={action} className="flex flex-col gap-4 px-4 sm:px-16">
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm text-zinc-600 dark:text-zinc-400"
-        >
-          Sähköpostiosoite
-        </label>
-        <input
+    <form action={action} className="flex flex-col space-y-4 px-4 sm:px-16">
+      <div className="grid gap-2">
+        <Label htmlFor="email">Sähköpostiosoite</Label>
+        <Input
           id="email"
           name="email"
           type="email"
-          placeholder="user@acme.com"
+          placeholder="nimi@esimerkki.fi"
           autoComplete="email"
+          autoCapitalize="none"
+          autoCorrect="off"
           required
-          className="mt-1 block w-full appearance-none rounded-md bg-zinc-100 px-3 py-2 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-black sm:text-sm dark:bg-zinc-700 dark:text-zinc-300"
         />
       </div>
-      <div>
-        <label
-          htmlFor="password"
-          className="block text-sm text-zinc-600 dark:text-zinc-400"
-        >
-          Salasana
-        </label>
-        <input
+
+      <div className="grid gap-2">
+        <Label htmlFor="password">Salasana</Label>
+        <Input
           id="password"
           name="password"
           type="password"
+          autoComplete="current-password"
           required
-          className="mt-1 block w-full appearance-none rounded-md bg-zinc-100 px-3 py-2 placeholder-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-black sm:text-sm dark:bg-zinc-700 dark:text-zinc-300"
         />
       </div>
+
       {children}
     </form>
   );

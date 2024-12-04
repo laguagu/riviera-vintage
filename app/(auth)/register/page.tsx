@@ -14,11 +14,10 @@ import { Loader2 } from "lucide-react";
 import Form from "next/form";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom"; // Lisätään tämä
+import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
-import { login } from "../actions";
+import { register } from "../actions";
 
-// Erotetaan submit-nappi omaksi komponentiksi
 function SubmitButton() {
   const { pending } = useFormStatus();
 
@@ -27,10 +26,10 @@ function SubmitButton() {
       {pending ? (
         <>
           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          Kirjaudutaan...
+          Luodaan tiliä...
         </>
       ) : (
-        "Kirjaudu sisään"
+        "Rekisteröidy"
       )}
     </Button>
   );
@@ -41,18 +40,20 @@ export default function Page() {
 
   async function handleSubmit(formData: FormData) {
     try {
-      const result = await login({ status: "idle" }, formData);
+      const result = await register({ status: "idle" }, formData);
 
-      if (result.status === "failed") {
-        toast.error("Virheelliset kirjautumistiedot!");
-        (document.getElementById("loginForm") as HTMLFormElement)?.reset();
+      if (result.status === "user_exists") {
+        toast.error("Tili on jo olemassa tällä sähköpostiosoitteella");
+        (document.getElementById("registerForm") as HTMLFormElement)?.reset();
+      } else if (result.status === "failed") {
+        toast.error("Tilin luonti epäonnistui");
       } else if (result.status === "success") {
-        toast.success("Kirjautuminen onnistui!");
+        toast.success("Tili luotu onnistuneesti!");
         router.refresh();
       }
     } catch (error) {
-      console.error("login failed", error);
-      toast.error("Kirjautuminen epäonnistui!");
+      console.error("Registration failed:", error);
+      toast.error("Rekisteröityminen epäonnistui");
     }
   }
 
@@ -60,15 +61,13 @@ export default function Page() {
     <div className="flex h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl text-center">
-            Kirjaudu sisään
-          </CardTitle>
+          <CardTitle className="text-2xl text-center">Rekisteröidy</CardTitle>
           <CardDescription className="text-center">
-            Kirjaudu sisään käyttämällä sähköpostiasi ja salasanaasi
+            Luo käyttäjätili sähköpostiosoitteellasi
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Form id="loginForm" action={handleSubmit} className="space-y-6">
+          <Form id="registerForm" action={handleSubmit} className="space-y-6">
             <div className="grid gap-4">
               <div className="grid gap-2">
                 <label htmlFor="email" className="text-sm font-medium">
@@ -86,22 +85,14 @@ export default function Page() {
               </div>
 
               <div className="grid gap-2">
-                <div className="flex justify-between items-center">
-                  <label htmlFor="password" className="text-sm font-medium">
-                    Salasana
-                  </label>
-                  {/* <Link
-                    href="/reset-password"
-                    className="text-sm text-muted-foreground hover:underline"
-                  >
-                    Unohditko salasanan?
-                  </Link> */}
-                </div>
+                <label htmlFor="password" className="text-sm font-medium">
+                  Salasana
+                </label>
                 <PasswordInput
                   id="password"
                   name="password"
                   placeholder="••••••••"
-                  autoComplete="current-password"
+                  autoComplete="new-password"
                   required
                 />
               </div>
@@ -111,14 +102,13 @@ export default function Page() {
           </Form>
 
           <div className="mt-6 text-center text-sm text-muted-foreground">
-            Ei käyttäjätiliä?{" "}
+            Onko sinulla jo tili?{" "}
             <Link
-              href="/register"
+              href="/login"
               className="font-medium text-primary hover:underline"
             >
-              Rekisteröidy
+              Kirjaudu sisään
             </Link>
-            {" ilmaiseksi"}
           </div>
         </CardContent>
       </Card>

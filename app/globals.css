@@ -3,9 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-start-rgb: 250, 245, 240;
+  --background-end-rgb: 235, 225, 210;
 }
 
 @font-face {
@@ -94,4 +93,38 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.bg-fade-bottom {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(255, 255, 255),
+    rgb(255, 255, 255) 85%,
+    rgb(250, 245, 240) 100%,
+    rgb(235, 225, 210)
+  );
+}
+
+.bg-fade-diagonal {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(255, 255, 255),
+    30%,
+    rgb(255, 255, 255) 75%,
+    rgb(250, 245, 240) 85%,
+    rgb(235, 225, 210)
+  );
+}
+
+.bg-claude-history {
+  background-color: rgba(235, 225, 210, 0.2);
+}
+
+.bg-claude {
+  background: linear-gradient(
+    to top,
+    rgba(235, 225, 210, 0) 50%,
+    rgba(235, 225, 210, 0.2) 90%,
+    rgba(235, 225, 210, 0.2) 100%
+  );
 }

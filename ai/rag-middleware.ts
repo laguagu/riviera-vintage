@@ -69,7 +69,6 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
 
     // RAG-toiminnallisuutta käytetään vain kysymyksiin
     if (classification !== "question") {
-      console.log("Not a question, returning original params", params);
       messages.push(recentMessage);
       return params;
     }
@@ -94,7 +93,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       filePaths: selection.map((path) =>
         storageMode === "shared"
           ? `haaga-helia-admin@alya.fi/${path}`
-          : `${session.user?.email}/${path}`
+          : `${session.user?.email}/${path}`,
       ),
     });
 
@@ -103,7 +102,7 @@ export const ragMiddleware: Experimental_LanguageModelV1Middleware = {
       ...chunk,
       similarity: cosineSimilarity(
         hypotheticalAnswerEmbedding,
-        chunk.embedding
+        chunk.embedding,
       ),
     }));
     // Järjestetään kappaleet samankaltaisuuden mukaan ja valitaan top K

@@ -29,18 +29,19 @@ export const authConfig = {
       let isLoggedIn = !!auth?.user;
       let isOnChat = nextUrl.pathname.startsWith("/");
       let isOnLogin = nextUrl.pathname.startsWith("/login");
+      let isOnRegister = nextUrl.pathname.startsWith("/register");
 
       // Ohjaa kaikki /register -pyynnöt login-sivulle poista tämä jos haluat rekisteröitymisen
-      if (nextUrl.pathname.startsWith("/register")) {
-        return Response.redirect(new URL("/login", nextUrl));
-      }
+      // if (nextUrl.pathname.startsWith("/register")) {
+      //   return Response.redirect(new URL("/login", nextUrl));
+      // }
 
       if (isLoggedIn && isOnLogin) {
         return Response.redirect(new URL("/", nextUrl));
       }
 
-      if (isOnLogin) {
-        return true; // Always allow access to login page
+      if (isOnLogin || isOnRegister) {
+        return true;
       }
 
       if (isOnChat) {

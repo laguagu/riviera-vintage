@@ -1,8 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BotIcon, UserIcon } from "./icons";
 import { ReactNode } from "react";
+import { BotIcon, UserIcon } from "./icons";
 import { Markdown } from "./markdown";
 
 export const Message = ({
@@ -14,7 +14,7 @@ export const Message = ({
 }) => {
   return (
     <motion.div
-      className={`flex flex-row gap-4 px-4 w-full md:w-[500px] md:px-0 first-of-type:pt-20`}
+      className={`flex flex-row gap-4 px-4 w-full md:w-[500px] md:px-0 first-of-type:pt-5`}
       initial={{ y: 5, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
     >
