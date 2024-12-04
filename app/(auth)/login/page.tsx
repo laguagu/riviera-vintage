@@ -60,7 +60,7 @@ export default function Page() {
       initial="initial"
       animate="animate"
       variants={fadeInUp}
-      className="flex h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900 "
+      className="flex flex-col h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900 "
     >
       <Particles
         className="absolute inset-0"
@@ -71,6 +71,9 @@ export default function Page() {
         size={0.42}
         refresh={false}
       />
+      <h1 className="text-4xl font-light mb-8 relative z-10 tracking-wide text-gray-800 dark:text-gray-100">
+        Antiikki Avustaja
+      </h1>
       <Card className="w-full max-w-md relative ">
         <CardHeader>
           <CardTitle className="text-2xl text-center">
