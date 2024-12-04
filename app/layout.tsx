@@ -1,4 +1,4 @@
-import { Navbar } from "@/components/navbar";
+import { NavbarWrapper } from "@/components/navbar-wrapper";
 import { Metadata } from "next";
 import { Toaster } from "sonner";
 import "./globals.css";
@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="fi">
       <body className="min-h-screen">
         <Toaster position="top-center" />
-        <Navbar />
+        <NavbarWrapper />
         {children}
       </body>
     </html>

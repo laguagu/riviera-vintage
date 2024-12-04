@@ -9,7 +9,7 @@ export interface LoginActionState {
 
 export async function login(
   data: LoginActionState,
-  formData: FormData
+  formData: FormData,
 ): Promise<LoginActionState> {
   try {
     const email = formData.get("email");

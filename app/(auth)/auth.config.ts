@@ -18,6 +18,7 @@ export const authConfig = {
   pages: {
     signIn: "/login",
     newUser: "/",
+    signOut: "/",
   },
   providers: [
     // added later in auth.ts since it requires bcrypt which is only compatible with Node.js
@@ -67,5 +68,16 @@ export const authConfig = {
       }
       return session;
     },
+    async redirect({ url, baseUrl }) {
+      // Varmista että uloskirjautumisen jälkeen ohjataan aina juureen
+      if (url.startsWith(baseUrl)) return url;
+      // Muussa tapauksessa ohjaa juureen
+      return baseUrl;
+    },
+  },
+  session: {
+    strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // 30 päivää
+    updateAge: 24 * 60 * 60, // 24 tuntia
   },
 } satisfies NextAuthConfig;
