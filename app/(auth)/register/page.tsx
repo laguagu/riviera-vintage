@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import Particles from "@/components/ui/particles";
 import { Loader2 } from "lucide-react";
 import Form from "next/form";
 import Link from "next/link";
@@ -58,8 +59,18 @@ export default function Page() {
   }
 
   return (
-    <div className="flex h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900">
-      <Card className="w-full max-w-md">
+    <div className="flex h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900 ">
+      <Particles
+        className="absolute inset-0"
+        color="#666666"
+        quantity={150}
+        staticity={110}
+        size={0.42}
+        vx={0.04}
+        vy={0.06}
+        refresh={false}
+      />
+      <Card className="w-full max-w-md relative ">
         <CardHeader>
           <CardTitle className="text-2xl text-center">Rekisteröidy</CardTitle>
           <CardDescription className="text-center">
