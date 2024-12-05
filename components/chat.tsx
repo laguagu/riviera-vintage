@@ -68,7 +68,6 @@ export function Chat({
     // Jos ollaan etusivulla, käytetään tyhjää array:ta
     initialMessages: id === "" ? [] : initialMessages,
     onFinish: (message) => {
-      console.log("onFinish", message);
       if (message.content.trim() !== "") {
         window.history.replaceState({}, "", `/${id}`);
       }
@@ -79,7 +78,7 @@ export function Chat({
     useScrollToBottom<HTMLDivElement>();
 
   return (
-    <div className="fixed inset-0 top-14 bg-dot-black/[0.2] dark:bg-zinc-900 pt-2 pb-6 flex">
+    <div className="absolute inset-0 top-14 bg-dot-black/[0.2] dark:bg-zinc-900 pt-2 pb-6 flex">
       <div
         className={`max-w-2xl w-full mx-auto px-4 ${messages.length === 0 ? "self-center" : "h-full"}`}
       >

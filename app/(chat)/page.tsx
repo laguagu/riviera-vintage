@@ -4,5 +4,9 @@ import { generateId } from "ai";
 
 export default async function Page() {
   const session = await auth();
-  return <Chat id={generateId()} initialMessages={[]} session={session} />;
+  const chatId = generateId();
+
+  return (
+    <Chat key={chatId} id={chatId} initialMessages={[]} session={session} />
+  );
 }

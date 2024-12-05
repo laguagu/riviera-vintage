@@ -26,21 +26,18 @@ export const History = () => {
       });
 
       if (response.ok) {
-        // Poistetaan chatId URL:stä jos se on siellä
         if (chatId === id || window.location.pathname.includes(chatId)) {
-          console.log("chatId:", chatId);
-          router.push("/");
-          router.refresh();
+          await router.refresh();
+          await router.replace("/");
           setIsHistoryVisible(false);
           await mutate();
         }
-      } else {
-        console.error("Failed to delete chat");
       }
     } catch (error) {
       console.error("Error deleting chat:", error);
     }
   };
+
   const [isHistoryVisible, setIsHistoryVisible] = React.useState(false);
   const {
     data: history,
