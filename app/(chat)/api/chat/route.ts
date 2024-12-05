@@ -6,7 +6,6 @@ import { convertToCoreMessages, streamText } from "ai";
 
 export async function POST(request: Request) {
   const { id, messages, selectedFilePathnames } = await request.json();
-  console.log("Apirouten valitut tiedostopolut: ", selectedFilePathnames);
 
   const session = await auth();
 
