@@ -16,25 +16,32 @@ export const History = () => {
   const pathname = usePathname();
 
   const deleteChat = async (chatId: string) => {
-    const response = await fetch("/api/history", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: chatId }),
-    });
+    try {
+      const response = await fetch("/api/history", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: chatId }),
+      });
 
-    if (response.ok) {
-      mutate(); // Päivitä historia poiston jälkeen
+      if (response.ok) {
+        await mutate();
 
-      if (chatId === id) {
-        router.push("/");
+        // Poistetaan chatId URL:stä jos se on siellä
+        if (chatId === id || window.location.pathname.includes(chatId)) {
+          console.log("chatId:", chatId);
+          router.push("/");
+          router.refresh(); // Lisätty sivun päivitys
+          setIsHistoryVisible(false); // Suljetaan historia-valikko
+        }
+      } else {
+        console.error("Failed to delete chat");
       }
-    } else {
-      console.error("Failed to delete chat");
+    } catch (error) {
+      console.error("Error deleting chat:", error);
     }
   };
-
   const [isHistoryVisible, setIsHistoryVisible] = React.useState(false);
   const {
     data: history,
@@ -52,7 +59,7 @@ export const History = () => {
   return (
     <>
       <div
-        className="dark:text-zinc-400 text-zinc-500 cursor-pointer "
+        className="dark:text-zinc-400 text-zinc-500 cursor-pointer hover:bg-zinc-100 dark:hover:bg-zinc-800 p-1.5 rounded-md transition-colors"
         onClick={() => {
           setIsHistoryVisible(true);
         }}
@@ -93,6 +100,7 @@ export const History = () => {
                   className="dark:text-zinc-400 dark:bg-zinc-700 hover:dark:bg-zinc-600 bg-zinc-100 hover:bg-zinc-200 p-1.5 rounded-md cursor-pointer"
                   onClick={() => {
                     setIsHistoryVisible(false);
+                    router.push("/");
                   }}
                 >
                   <PencilEditIcon size={14} />

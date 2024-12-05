@@ -37,7 +37,7 @@ export const authConfig = {
       //   return Response.redirect(new URL("/login", nextUrl));
       // }
 
-      if (isLoggedIn && isOnLogin) {
+      if (isLoggedIn && (isOnLogin || isOnRegister)) {
         return Response.redirect(new URL("/", nextUrl));
       }
 

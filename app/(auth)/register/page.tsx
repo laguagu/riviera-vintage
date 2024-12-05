@@ -11,9 +11,11 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import Particles from "@/components/ui/particles";
+import Shapes from "@/public/shapes.svg";
 import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Form from "next/form";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useFormStatus } from "react-dom";
@@ -60,75 +62,88 @@ export default function Page() {
   }
 
   return (
-    <motion.div
-      initial="initial"
-      animate="animate"
-      variants={fadeInUp}
-      className="flex flex-col h-screen w-screen items-center justify-center bg-fade-diagonal dark:bg-zinc-900 "
-    >
-      <Particles
-        className="absolute inset-0"
-        color="#666666"
-        quantity={175}
-        staticity={110}
-        ease={30}
-        size={0.42}
-        refresh={false}
+    <div className="relative overflow-hidden h-screen w-screen bg-fade-diagonal dark:bg-zinc-900">
+      <Image
+        src={Shapes}
+        alt="shapes"
+        className="absolute -top-8 -left-8 z-0 opacity-30"
+        width={160}
+        height={160}
+        priority
+        unoptimized
       />
 
-      <Card className="w-full max-w-md relative ">
-        <CardHeader>
-          <CardTitle className="text-2xl text-center">Rekisteröidy</CardTitle>
-          <CardDescription className="text-center">
-            Luo käyttäjätili sähköpostiosoitteellasi
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Form id="registerForm" action={handleSubmit} className="space-y-6">
-            <div className="grid gap-4">
-              <div className="grid gap-2">
-                <label htmlFor="email" className="text-sm font-medium">
-                  Sähköposti
-                </label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="nimi@esimerkki.fi"
-                  autoComplete="email"
-                  autoCapitalize="none"
-                  required
-                />
-              </div>
+      <motion.div
+        initial="initial"
+        animate="animate"
+        variants={fadeInUp}
+        className="flex flex-col h-full w-full items-center justify-center"
+      >
+        <Particles
+          className="absolute inset-0"
+          color="#666666"
+          quantity={190}
+          staticity={110}
+          ease={30}
+          size={0.42}
+          refresh={false}
+          vy={0.1}
+        />
 
-              <div className="grid gap-2">
-                <label htmlFor="password" className="text-sm font-medium">
-                  Salasana
-                </label>
-                <PasswordInput
-                  id="password"
-                  name="password"
-                  placeholder="••••••••"
-                  autoComplete="new-password"
-                  required
-                />
-              </div>
+        <Card className="w-full max-w-md relative ">
+          <CardHeader>
+            <CardTitle className="text-2xl text-center">Rekisteröidy</CardTitle>
+            <CardDescription className="text-center">
+              Luo käyttäjätili sähköpostiosoitteellasi
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Form id="registerForm" action={handleSubmit} className="space-y-6">
+              <div className="grid gap-4">
+                <div className="grid gap-2">
+                  <label htmlFor="email" className="text-sm font-medium">
+                    Sähköposti
+                  </label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="nimi@esimerkki.fi"
+                    autoComplete="email"
+                    autoCapitalize="none"
+                    required
+                  />
+                </div>
 
-              <SubmitButton />
+                <div className="grid gap-2">
+                  <label htmlFor="password" className="text-sm font-medium">
+                    Salasana
+                  </label>
+                  <PasswordInput
+                    id="password"
+                    name="password"
+                    placeholder="••••••••"
+                    autoComplete="new-password"
+                    required
+                  />
+                </div>
+
+                <SubmitButton />
+              </div>
+            </Form>
+
+            <div className="mt-6 text-center text-sm text-muted-foreground">
+              Onko sinulla jo tili?{" "}
+              <Link
+                href="/login"
+                className="font-medium text-primary hover:underline"
+              >
+                Kirjaudu sisään
+              </Link>
             </div>
-          </Form>
-
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            Onko sinulla jo tili?{" "}
-            <Link
-              href="/login"
-              className="font-medium text-primary hover:underline"
-            >
-              Kirjaudu sisään
-            </Link>
-          </div>
-        </CardContent>
-      </Card>
-    </motion.div>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </div>
   );
 }

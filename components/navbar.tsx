@@ -15,10 +15,12 @@ export const NavbarClient = ({ session }: { session: Session | null }) => {
   }
 
   return (
-    <div className="bg-red absolute top-0 left-0 w-dvw border-b bg-claude dark:border-zinc-800 py-2 px-3 justify-between flex flex-row items-center dark:bg-zinc-900 z-30">
+    <div className="fixed top-0 left-0 w-dvw border-b backdrop-blur-sm bg-claude dark:border-zinc-800 py-2 px-3 justify-between flex flex-row items-center dark:bg-zinc-900 z-50">
       <div className="flex flex-row gap-3 items-center">
         <History />
-        <div className="text-sm dark:text-zinc-300">Antiikki avustaja</div>
+        <div className="text-[0.9375rem] dark:text-zinc-300 ml-1">
+          Antiikki avustaja
+        </div>
       </div>
 
       {session ? (

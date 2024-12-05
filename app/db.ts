@@ -11,6 +11,8 @@ const connectionString = `${process.env.POSTGRES_URL!}`;
 const client = postgres(connectionString, { max: 10 }); // Määritä poolin koko
 const db = drizzle(client);
 
+type NewUser = typeof user.$inferInsert;
+
 export async function getUser(email: string) {
   return await db.select().from(user).where(eq(user.email, email));
 }
@@ -19,7 +21,12 @@ export async function createUser(email: string, password: string) {
   let salt = genSaltSync(10);
   let hash = hashSync(password, salt);
 
-  return await db.insert(user).values({ email, password: hash });
+  const newUser: NewUser = {
+    email,
+    password: hash,
+  };
+
+  return await db.insert(user).values(newUser);
 }
 
 export async function createMessage({
