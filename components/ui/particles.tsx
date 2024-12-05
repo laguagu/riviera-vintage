@@ -46,12 +46,9 @@ function useMousePosition(): MousePosition {
     y: 0,
   });
 
-  const handleMouseMove = useCallback(
-    throttle((event: MouseEvent) => {
-      setMousePosition({ x: event.clientX, y: event.clientY });
-    }, 50),
-    [],
-  );
+  const handleMouseMove = useCallback((event: MouseEvent) => {
+    setMousePosition({ x: event.clientX, y: event.clientY });
+  }, []);
 
   useEffect(() => {
     window.addEventListener("mousemove", handleMouseMove);

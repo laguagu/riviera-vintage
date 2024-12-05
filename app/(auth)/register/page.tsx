@@ -21,7 +21,22 @@ import { useRouter } from "next/navigation";
 import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
 import { register } from "../actions";
-import { fadeInUp } from "../login/page";
+
+const fadeInUp = {
+  initial: {
+    opacity: 0,
+    y: 20,
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5,
+      ease: "easeInOut",
+    },
+  },
+};
+
 function SubmitButton() {
   const { pending } = useFormStatus();
 

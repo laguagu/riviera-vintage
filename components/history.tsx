@@ -26,14 +26,13 @@ export const History = () => {
       });
 
       if (response.ok) {
-        await mutate();
-
         // Poistetaan chatId URL:stä jos se on siellä
         if (chatId === id || window.location.pathname.includes(chatId)) {
           console.log("chatId:", chatId);
           router.push("/");
-          router.refresh(); // Lisätty sivun päivitys
-          setIsHistoryVisible(false); // Suljetaan historia-valikko
+          router.refresh();
+          setIsHistoryVisible(false);
+          await mutate();
         }
       } else {
         console.error("Failed to delete chat");
@@ -98,9 +97,10 @@ export const History = () => {
                 <Link
                   href="/"
                   className="dark:text-zinc-400 dark:bg-zinc-700 hover:dark:bg-zinc-600 bg-zinc-100 hover:bg-zinc-200 p-1.5 rounded-md cursor-pointer"
-                  onClick={() => {
+                  onClick={async () => {
                     setIsHistoryVisible(false);
                     router.push("/");
+                    await mutate();
                   }}
                 >
                   <PencilEditIcon size={14} />

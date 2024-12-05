@@ -65,7 +65,8 @@ export function Chat({
 
   const { messages, handleSubmit, input, setInput, append } = useChat({
     body: { id, selectedFilePathnames },
-    initialMessages,
+    // Jos ollaan etusivulla, käytetään tyhjää array:ta
+    initialMessages: id === "" ? [] : initialMessages,
     onFinish: (message) => {
       console.log("onFinish", message);
       if (message.content.trim() !== "") {

@@ -18,10 +18,11 @@ import Form from "next/form";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useFormStatus } from "react-dom"; // Lisätään tämä
+import { useFormStatus } from "react-dom";
 import { toast } from "sonner";
 import { login } from "../actions";
-export const fadeInUp = {
+
+const fadeInUp = {
   initial: {
     opacity: 0,
     y: 20,
