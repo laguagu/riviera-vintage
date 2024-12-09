@@ -26,15 +26,22 @@ export const History = () => {
       });
 
       if (response.ok) {
+        // Päivitetään ensin SWR cache
+        await mutate(
+          // Optimistinen päivitys: poistetaan chat heti UI:sta
+          history?.filter((chat) => chat.id !== chatId),
+        );
+
+        // Jos ollaan poistetun chatin sivulla, redirectataan
         if (chatId === id || window.location.pathname.includes(chatId)) {
-          await router.refresh();
-          await router.replace("/");
           setIsHistoryVisible(false);
-          await mutate();
+          await router.replace("/");
         }
       }
     } catch (error) {
       console.error("Error deleting chat:", error);
+      // Virhetilanteessa revalidoidaan data palvelimelta
+      await mutate();
     }
   };
 
