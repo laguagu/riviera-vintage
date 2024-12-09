@@ -3,8 +3,8 @@
 import { CustomSession } from "@/app/(auth)/auth.config";
 import { fetcher } from "@/utils/functions";
 import cx from "classnames";
-import { motion } from "framer-motion";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { motion } from "motion/react";
+import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
 import useSWR from "swr";
 import { useOnClickOutside, useWindowSize } from "usehooks-ts";
 import {
@@ -46,8 +46,9 @@ export const Files = ({
   const isDesktop = width > 768;
   const isAdmin = session?.user?.role === "admin";
 
-  const drawerRef = useRef(null);
-  useOnClickOutside([drawerRef], () => {
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside([drawerRef as RefObject<HTMLElement>], () => {
     setIsFilesVisible(false);
   });
 

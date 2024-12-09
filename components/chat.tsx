@@ -6,7 +6,7 @@ import { Message as PreviewMessage } from "@/components/message";
 import { useScrollToBottom } from "@/components/use-scroll-to-bottom";
 import { Message } from "ai";
 import { useChat } from "ai/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import { Session } from "next-auth";
 import { useEffect, useState } from "react";
 

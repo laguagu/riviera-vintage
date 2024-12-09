@@ -12,8 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import Particles from "@/components/ui/particles";
 import Shapes from "@/public/shapes.svg";
-import { motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { motion } from "motion/react";
 import Form from "next/form";
 import Image from "next/image";
 import Link from "next/link";

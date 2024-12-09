@@ -3,7 +3,7 @@
 import { Chat } from "@/schema";
 import { fetcher } from "@/utils/functions";
 import cx from "classnames";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
 import { useParams, usePathname, useRouter } from "next/navigation";
 import React, { useEffect } from "react";
