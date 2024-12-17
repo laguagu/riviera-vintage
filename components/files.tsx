@@ -4,7 +4,14 @@ import { CustomSession } from "@/app/(auth)/auth.config";
 import { fetcher } from "@/utils/functions";
 import cx from "classnames";
 import { motion } from "motion/react";
-import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
+import {
+  Dispatch,
+  RefObject,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import useSWR from "swr";
 import { useOnClickOutside, useWindowSize } from "usehooks-ts";
 import {
@@ -51,6 +58,13 @@ export const Files = ({
   useOnClickOutside([drawerRef as RefObject<HTMLElement>], () => {
     setIsFilesVisible(false);
   });
+
+  useEffect(() => {
+    if (!isAdmin && files?.length) {
+      const allPathnames = files.map((file) => file.pathname);
+      setSelectedFilePathnames(allPathnames);
+    }
+  }, [files, isAdmin]);
 
   return (
     <motion.div
@@ -178,8 +192,11 @@ export const Files = ({
               }`}
             >
               <div
-                className="flex flex-row items-center justify-between w-full gap-4"
+                className={`flex flex-row items-center justify-between w-full gap-4 ${
+                  !isAdmin ? "cursor-not-allowed" : "cursor-pointer"
+                }`}
                 onClick={() => {
+                  if (!isAdmin) return;
                   setSelectedFilePathnames((currentSelections) => {
                     if (currentSelections.includes(file.pathname)) {
                       return currentSelections.filter(
@@ -193,7 +210,7 @@ export const Files = ({
               >
                 <div
                   className={cx(
-                    "cursor-pointer",
+                    isAdmin ? "cursor-pointer" : "cursor-not-allowed",
                     selectedFilePathnames.includes(file.pathname) &&
                       !deleteQueue.includes(file.pathname)
                       ? "text-blue-600 dark:text-zinc-50"
@@ -205,7 +222,9 @@ export const Files = ({
                       <LoaderIcon />
                     </div>
                   ) : selectedFilePathnames.includes(file.pathname) ? (
-                    <CheckedSquare />
+                    <div className={!isAdmin ? "opacity-50" : ""}>
+                      <CheckedSquare />
+                    </div>
                   ) : (
                     <UncheckedSquare />
                   )}

@@ -9,6 +9,7 @@ import { useChat } from "ai/react";
 import { AnimatePresence, motion } from "motion/react";
 import { Session } from "next-auth";
 import { useEffect, useState } from "react";
+import SuggestionAlert from "./suggestion-alert";
 
 const suggestedActions = [
   {
@@ -78,7 +79,7 @@ export function Chat({
     useScrollToBottom<HTMLDivElement>();
 
   return (
-    <div className="absolute inset-0 top-14 bg-dot-black/[0.2] dark:bg-zinc-900 pt-2 pb-6 flex">
+    <div className="absolute inset-0 top-14 bg-dot-black/[0.2] dark:bg-zinc-900 pt-2 pb-6 flex bg-fade-brown-chat">
       <div
         className={`max-w-2xl w-full mx-auto px-4 ${messages.length === 0 ? "self-center" : "h-full"}`}
       >
@@ -92,10 +93,13 @@ export function Chat({
             <h2 className="text-2xl font-semibold text-primary">
               Miten voin auttaa?
             </h2>
-            <p className="text-lg text-zinc-600 dark:text-zinc-300">
-              Avustaja auttaa sinua löytämään alan liikkeitä ja palveluita sekä
-              vastaa kysymyksiisi antiikista.
-            </p>
+            <div>
+              <p className="text-lg text-zinc-600 dark:text-zinc-300">
+                Avustaja auttaa sinua löytämään alan liikkeitä ja palveluita
+                sekä vastaa kysymyksiisi antiikista.
+              </p>
+              <SuggestionAlert />
+            </div>
           </motion.div>
         )}
         <div
