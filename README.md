@@ -214,13 +214,17 @@ Chatbot hyödyntää [Vercel AI SDK:n middleware-toiminnallisuutta](https://sdk.
 
 ```mermaid
 graph TD
-   A[Käyttäjän viesti] --> B[Middleware]
-   B --> C[Viestin luokittelu]
-   C -- Kysymys --> D[Dokumenttihaku]
-   D --> E[Kontekstin yhdistäminen]
-   C -- Muu viesti --> F[Kielimalli]
-   E --> F
-   F --> G[Vastaus käyttäjälle]
+    A[User Message] --> B[Middleware]
+    B --> C[Message Classification]
+    C -- Question --> D[Document Retrieval]
+    D --> E[Context Integration]
+    C -- Other message --> F[Language Model]
+    E --> F
+    F --> G[Response to User]
+
+    style A fill:#f9f,stroke:#333,stroke-width:2px
+    style G fill:#9ff,stroke:#333,stroke-width:2px
+    style F fill:#ff9,stroke:#333,stroke-width:2px
 ```
 
 ## Lisenssi
