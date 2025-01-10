@@ -19,7 +19,7 @@ export const NavbarClient = ({ session }: { session: Session | null }) => {
       <div className="flex flex-row gap-3 items-center">
         <History />
         <div className="text-[0.9375rem] dark:text-zinc-300 ml-1">
-          Antiikki avustaja
+          AntiikkiAvustaja
         </div>
       </div>
 

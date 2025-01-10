@@ -12,8 +12,8 @@ import {
 import { Input } from "@/components/ui/input";
 import Particles from "@/components/ui/particles";
 import Shapes from "@/public/shapes.svg";
-import { motion } from "motion/react";
 import { Loader2 } from "lucide-react";
+import { motion } from "motion/react";
 import Form from "next/form";
 import Image from "next/image";
 import Link from "next/link";
@@ -85,7 +85,7 @@ export default function Page() {
           vy={0.1}
         />
         <h1 className="text-4xl font-light mb-8 relative z-10 tracking-wide text-gray-800 dark:text-gray-100">
-          Antiikki Avustaja
+          AntiikkiAvustaja
         </h1>
         <Card className="w-full max-w-md relative ">
           <CardHeader>

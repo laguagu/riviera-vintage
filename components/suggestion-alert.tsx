@@ -57,15 +57,16 @@ const SuggestionAlert = () => {
 
   return (
     <Alert
-      className="mt-1 md:py-1.5 py-1 px-2 bg-zinc-50/50 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 w-fit mx-auto "
+      className="mt-1 md:py-1.5 py-1 px-2 bg-zinc-50/90 dark:bg-zinc-900/50 border-zinc-200 dark:border-zinc-800 w-fit mx-auto"
       ref={alertRef}
     >
       <div className="flex items-center gap-1.5">
         <div ref={lightbulbRef} className="origin-center">
           <LightbulbIcon className="h-3 w-3 text-zinc-600 dark:text-zinc-400 flex-shrink-0" />
         </div>
-        <AlertDescription className="text-xs tracking-tight md:tracking-normal text-zinc-600 dark:text-zinc-300">
-          Voit esimerkiksi kysyä mikä liike myy 20-luvun antiikkia Helsingissä?
+        <AlertDescription className="text-xs tracking-tight md:tracking-normal text-zinc-600 dark:text-zinc-300 ">
+          Voit esimerkiksi kysyä: &quot;Mikä liike myy 20-luvun antiikkia
+          Helsingissä?&quot;
         </AlertDescription>
       </div>
     </Alert>

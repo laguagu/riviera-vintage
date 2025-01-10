@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Antiikki Avustaja | AI Chatbot",
+  title: "AntiikkiAvustaja | AI Chatbot",
   description:
     "Chatbot auttaa sinua löytämään tietoa ja vastauksia kysymyksiisi.",
 };
