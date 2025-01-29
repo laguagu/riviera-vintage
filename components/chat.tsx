@@ -9,7 +9,15 @@ import { useChat } from "ai/react";
 import { AnimatePresence, motion } from "motion/react";
 import { Session } from "next-auth";
 import { useEffect, useState } from "react";
+import Balancer from "react-wrap-balancer";
 import SuggestionAlert from "./suggestion-alert";
+
+interface userProfile extends Session {
+  user: {
+    role: string;
+    email: string;
+  };
+}
 
 const suggestedActions = [
   {
@@ -31,13 +39,14 @@ export function Chat({
 }: {
   id: string;
   initialMessages: Array<Message>;
-  session: Session | null;
+  session: userProfile | null;
 }) {
   const [selectedFilePathnames, setSelectedFilePathnames] = useState<
     Array<string>
   >([]);
   const [isFilesVisible, setIsFilesVisible] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const isAdmin = session?.user.role === "admin";
 
   useEffect(() => {
     if (isMounted !== false && session && session.user) {
@@ -88,15 +97,17 @@ export function Chat({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="text-center space-y-3 max-w-md px-4 mx-auto mb-8 mt-20"
+            className="text-center space-y-3 max-w-md px-4 mx-auto mb-4 mt-20"
           >
-            <h2 className="text-2xl font-semibold text-primary">
+            <h2 className="text-4xl font-semibold text-primary">
               Miten voin auttaa?
             </h2>
-            <div>
-              <p className="text-lg text-zinc-600 dark:text-zinc-300">
-                Avustaja auttaa sinua löytämään alan liikkeitä ja palveluita
-                sekä vastaa kysymyksiisi antiikista.
+            <div className="space-y-8">
+              <p className="text-sm tracking-tighter text-zinc-600 dark:text-zinc-300 text-wrap">
+                <Balancer>
+                  AntiikkiAvustaja auttaa löytämään alan liikkeitä ja palveluita
+                  sekä vastaa antiikkia koskeviin kysymyksiisi
+                </Balancer>
               </p>
               <SuggestionAlert />
             </div>
@@ -142,22 +153,24 @@ export function Chat({
                 }}
               />
 
-              <div
-                className="relative text-sm bg-zinc-100 rounded-lg size-9 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer hover:bg-zinc-200 dark:text-zinc-50 dark:bg-zinc-700 dark:hover:bg-zinc-800"
-                onClick={() => {
-                  setIsFilesVisible(!isFilesVisible);
-                }}
-              >
-                <FileIcon />
-                <motion.div
-                  className="absolute text-xs -top-2 -right-2 bg-blue-500 size-5 rounded-full flex flex-row justify-center items-center border-2 dark:border-zinc-900 border-white text-blue-50"
-                  initial={{ opacity: 0, scale: 0.5 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.5 }}
+              {isAdmin && (
+                <div
+                  className="relative text-sm bg-zinc-100 rounded-lg size-9 flex-shrink-0 flex flex-row items-center justify-center cursor-pointer hover:bg-zinc-200 dark:text-zinc-50 dark:bg-zinc-700 dark:hover:bg-zinc-800"
+                  onClick={() => {
+                    setIsFilesVisible(!isFilesVisible);
+                  }}
                 >
-                  {selectedFilePathnames?.length}
-                </motion.div>
-              </div>
+                  <FileIcon />
+                  <motion.div
+                    className="absolute text-xs -top-2 -right-2 bg-blue-500 size-5 rounded-full flex flex-row justify-center items-center border-2 dark:border-zinc-900 border-white text-blue-50"
+                    initial={{ opacity: 0, scale: 0.5 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    {selectedFilePathnames?.length}
+                  </motion.div>
+                </div>
+              )}
             </form>
           </div>
         </div>
